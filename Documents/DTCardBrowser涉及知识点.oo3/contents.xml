@@ -1,0 +1,368 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE outline PUBLIC "-//omnigroup.com//DTD OUTLINE 3.0//EN" "http://www.omnigroup.com/namespace/OmniOutliner/xmloutline-v3.dtd">
+<outline xmlns="http://www.omnigroup.com/namespace/OmniOutliner/v3">
+  <style-attribute-registry>
+    <style-attribute version="0" key="font-family" group="字体" name="系列" class="string">Helvetica</style-attribute>
+    <style-attribute version="1" key="font-fill" group="字体" name="填充颜色" class="color">
+      <color w="0"/>
+    </style-attribute>
+    <style-attribute version="0" key="font-size" group="字体" name="尺寸" class="number" integral="0" min="1" max="65536">12</style-attribute>
+    <style-attribute version="0" key="font-weight" group="字体" name="粗细" class="number" integral="1" min="1" max="14">5</style-attribute>
+    <style-attribute version="0" key="paragraph-alignment" group="段落" name="对齐" class="enum">
+      <enum-name-table default-value="4">
+        <enum-name-table-element value="0" name="left" display-name="左"/>
+        <enum-name-table-element value="1" name="right" display-name="右"/>
+        <enum-name-table-element value="2" name="center" display-name="居中"/>
+        <enum-name-table-element value="3" name="justified" display-name="两边对齐"/>
+        <enum-name-table-element value="4" name="natural" display-name="自然"/>
+      </enum-name-table>
+    </style-attribute>
+    <style-attribute version="0" key="paragraph-base-writing-direction" group="段落" name="书写方向" class="enum">
+      <enum-name-table default-value="-1">
+        <enum-name-table-element value="-1" name="natural" display-name="自然"/>
+        <enum-name-table-element value="0" name="left-to-right" display-name="从左到右"/>
+        <enum-name-table-element value="1" name="right-to-left" display-name="从右到左"/>
+      </enum-name-table>
+    </style-attribute>
+    <style-attribute version="0" key="text-background-color" group="文本" name="背景颜色" class="color">
+      <color w="0" a="0"/>
+    </style-attribute>
+  </style-attribute-registry>
+  <named-styles>
+    <named-style id="pEuyXj84FqX" name="文本内容" display-order="0">
+      <style>
+        <value key="font-fill">
+          <color r="0.345098" g="0.431373" b="0.458824"/>
+        </value>
+        <value key="font-size">14</value>
+      </style>
+    </named-style>
+    <named-style id="oNjvfB6_IzG" name="Highlight" display-order="1">
+      <style>
+        <value key="text-background-color">
+          <color r="0.933333" g="0.909804" b="0.835294"/>
+        </value>
+      </style>
+    </named-style>
+    <named-style id="cSoZGSaRPiN" name="二级目录" display-order="2">
+      <style>
+        <value key="font-fill">
+          <color r="0.709804" g="0.537255" b="0"/>
+        </value>
+        <value key="font-size">20</value>
+      </style>
+    </named-style>
+    <named-style id="jmMHkfmYZ1M" name="三级目录" display-order="3">
+      <style>
+        <value key="font-fill">
+          <color r="0.709804" g="0.537255" b="0"/>
+        </value>
+        <value key="font-size">14</value>
+      </style>
+    </named-style>
+    <named-style id="a0st9oz2FO1" name="Orange" display-order="4">
+      <style>
+        <value key="font-fill">
+          <color r="0.796078" g="0.294118" b="0.086275"/>
+        </value>
+      </style>
+    </named-style>
+    <named-style id="n7Lfd4MM7uE" name="Red" display-order="5">
+      <style>
+        <value key="font-fill">
+          <color r="0.862745" g="0.196078" b="0.184314"/>
+        </value>
+      </style>
+    </named-style>
+    <named-style id="aeYpF7M08yK" name="Magenta" display-order="6">
+      <style>
+        <value key="font-fill">
+          <color r="0.827451" g="0.211765" b="0.509804"/>
+        </value>
+      </style>
+    </named-style>
+    <named-style id="fyki-wDjq0-" name="Violet" display-order="7">
+      <style>
+        <value key="font-fill">
+          <color r="0.423529" g="0.443137" b="0.768627"/>
+        </value>
+      </style>
+    </named-style>
+    <named-style id="hAkuUjwYLH4" name="Blue" display-order="8">
+      <style>
+        <value key="font-fill">
+          <color r="0.14902" g="0.545098" b="0.823529"/>
+        </value>
+      </style>
+    </named-style>
+    <named-style id="eF5w5ahSfcU" name="Cyan" display-order="9">
+      <style>
+        <value key="font-fill">
+          <color r="0.164706" g="0.631373" b="0.596078"/>
+        </value>
+      </style>
+    </named-style>
+    <named-style id="kH8JuFLRG40" name="Green" display-order="10">
+      <style>
+        <value key="font-fill">
+          <color r="0.521569" g="0.6" b="0"/>
+        </value>
+      </style>
+    </named-style>
+  </named-styles>
+  <settings>
+    <base-style>
+      <style>
+        <value key="font-family">Avenir</value>
+        <value key="font-fill">
+          <color r="0.396078" g="0.482353" b="0.513725"/>
+        </value>
+        <value key="font-size">14</value>
+        <value key="font-weight">6</value>
+        <value key="paragraph-base-writing-direction">left-to-right</value>
+        <value key="text-background-color">
+          <color r="0.992157" g="0.964706" b="0.890196"/>
+        </value>
+      </style>
+    </base-style>
+    <print-info>
+      <print-info-key name="OOScaleDocumentToFitPageWidth" type="boolean">true</print-info-key>
+    </print-info>
+    <auto-generate-level-styles>no</auto-generate-level-styles>
+  </settings>
+  <editor content-size="{566, 684}" column-titles-display-mode="auto" status-visible="no" hide-attachment-tags="yes" is-spellchecking-enabled="yes">
+    <drawer display="sections" width="185" palette-height="521"/>
+    <note-split-view height="141"/>
+    <hoisted-rows ids="h984Bisb8eO"/>
+    <selected-rows ids="bp-QC-u7t8F"/>
+    <selected-columns ids="jFqHUGd_Dg1"/>
+    <selected-characters range="{66, 0}"/>
+  </editor>
+  <outline-title>
+    <text>
+      <p>
+        <run>
+          <style>
+            <value key="font-family">Helvetica</value>
+            <value key="font-weight">5</value>
+            <value key="paragraph-alignment">center</value>
+          </style>
+          <lit><cell variable="OODocumentFilenameVariableIdentifier"/></lit>
+        </run>
+      </p>
+    </text>
+  </outline-title>
+  <columns>
+    <column id="dTpN3JwYpBn" type="text" width="18" minimum-width="18" maximum-width="18" text-export-width="1" is-note-column="yes">
+      <style>
+        <value key="font-fill">
+          <color r="0.576471" g="0.631373" b="0.631373"/>
+        </value>
+      </style>
+      <title>
+        <text>
+          <p/>
+        </text>
+      </title>
+    </column>
+    <column id="jFqHUGd_Dg1" type="text" width="545" minimum-width="13" maximum-width="1000000" text-export-width="72" is-outline-column="yes">
+      <title>
+        <text>
+          <p>
+            <run>
+              <lit>Topic</lit>
+            </run>
+          </p>
+        </text>
+      </title>
+    </column>
+  </columns>
+  <root>
+    <style>
+      <value key="font-weight">7</value>
+    </style>
+    <style>
+      <inherited-style name="三级目录" idref="jmMHkfmYZ1M"/>
+      <value key="font-size">28</value>
+      <value key="font-weight">3</value>
+    </style>
+    <style>
+      <inherited-style name="三级目录" idref="jmMHkfmYZ1M"/>
+      <value key="font-size">20</value>
+      <value key="font-weight">5</value>
+    </style>
+    <style>
+      <inherited-style name="三级目录" idref="jmMHkfmYZ1M"/>
+    </style>
+    <item id="h984Bisb8eO" expanded="yes">
+      <values>
+        <text>
+          <p>
+            <run>
+              <lit>DTCardBrowser</lit>
+            </run>
+            <run>
+              <lit>涉及知识点</lit>
+            </run>
+          </p>
+        </text>
+      </values>
+      <children>
+        <item id="jo51z1zdDY4" expanded="yes">
+          <values>
+            <text>
+              <p>
+                <run>
+                  <lit>关键字</lit>
+                </run>
+              </p>
+            </text>
+          </values>
+          <children>
+            <item id="fFwpM-16rTK" expanded="yes">
+              <values>
+                <text>
+                  <p>
+                    <run>
+                      <lit>final</lit>
+                    </run>
+                  </p>
+                </text>
+              </values>
+              <children>
+                <item id="dYJupglxM25">
+                  <values>
+                    <text>
+                      <p>
+                        <run>
+                          <lit>final</lit>
+                        </run>
+                        <run>
+                          <lit>关键字可用在</lit>
+                        </run>
+                        <run>
+                          <lit>class</lit>
+                        </run>
+                        <run>
+                          <lit>、</lit>
+                        </run>
+                        <run>
+                          <lit>func</lit>
+                        </run>
+                        <run>
+                          <lit>或者</lit>
+                        </run>
+                        <run>
+                          <lit>var</lit>
+                        </run>
+                        <run>
+                          <lit>前面进行修饰，表示不允许对该内容进行继承或者重写操作。</lit>
+                        </run>
+                      </p>
+                    </text>
+                  </values>
+                </item>
+              </children>
+            </item>
+            <item id="jkx5BaIPyd4" expanded="yes">
+              <values>
+                <text>
+                  <p>
+                    <run>
+                      <lit>dynamic</lit>
+                    </run>
+                  </p>
+                </text>
+              </values>
+              <children>
+                <item id="eVzqPhqJWLT">
+                  <values>
+                    <text>
+                      <p>
+                        <run>
+                          <lit>dynamic</lit>
+                        </run>
+                        <run>
+                          <lit>关键字可用在</lit>
+                        </run>
+                        <run>
+                          <lit>func</lit>
+                        </run>
+                        <run>
+                          <lit>或者</lit>
+                        </run>
+                        <run>
+                          <lit>var</lit>
+                        </run>
+                        <run>
+                          <lit>前面进行修饰，表示该方法或属性会变成动态派发，应用场景为动态替换或者运行时再决定。另外如果在</lit>
+                        </run>
+                        <run>
+                          <lit>Swift</lit>
+                        </run>
+                        <run>
+                          <lit>中使用</lit>
+                        </run>
+                        <run>
+                          <lit>KVO</lit>
+                        </run>
+                        <run>
+                          <lit>，那么也需要在属性前加上该关键字。</lit>
+                        </run>
+                      </p>
+                    </text>
+                  </values>
+                </item>
+              </children>
+            </item>
+          </children>
+        </item>
+        <item id="pDK8t5S0m9J" expanded="yes">
+          <values>
+            <text>
+              <p>
+                <run>
+                  <lit>属性观察</lit>
+                </run>
+              </p>
+            </text>
+          </values>
+          <children>
+            <item id="bp-QC-u7t8F">
+              <style>
+                <inherited-style name="文本内容" idref="pEuyXj84FqX"/>
+              </style>
+              <values>
+                <text>
+                  <p>
+                    <run>
+                      <lit>属性观察可以让我们在当前类型内监视对于属性的设定，并作出一些响应，</lit>
+                    </run>
+                    <run>
+                      <lit>Swift</lit>
+                    </run>
+                    <run>
+                      <lit>提供了两个属性观察的方法，</lit>
+                    </run>
+                    <run>
+                      <lit>willSet</lit>
+                    </run>
+                    <run>
+                      <lit>和</lit>
+                    </run>
+                    <run>
+                      <lit>didSet</lit>
+                    </run>
+                    <run>
+                      <lit>。</lit>
+                    </run>
+                  </p>
+                </text>
+              </values>
+            </item>
+          </children>
+        </item>
+      </children>
+    </item>
+  </root>
+</outline>

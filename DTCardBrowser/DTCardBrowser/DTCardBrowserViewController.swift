@@ -42,12 +42,15 @@ public class DTCardBrowserViewController: UIViewController {
         }
         
         if let image = cfg.coverAttributes.logoImage {
-            cardView.coverView!.logoImageView.image = image
-            cardView.coverView!.logoImageView.sizeToFit()
+            cardView.coverView!.logoImageView = UIImageView(image: image)
         } else {
-            cardView.coverView!.logoImageView.image = UIImage(named: "")
-            cardView.coverView!.logoImageView.sizeToFit()
+            cardView.coverView!.logoImageView = UIImageView(image: UIImage(named: ""))
         }
+        
+        cardView.coverView!.descriptionFontSize = cfg.coverAttributes.descriptionFontSize == nil ? 12.0 : cfg.coverAttributes.descriptionFontSize!
+        cardView.coverView!.descriptionFontColor = cfg.coverAttributes.descriptionFontColor == nil ? UIColor.whiteColor() : cfg.coverAttributes.descriptionFontColor!
+        cardView.coverView!.descriptions = cfg.coverAttributes.description
+        
         
         cardView.frame = view.bounds
         view.addSubview(cardView)

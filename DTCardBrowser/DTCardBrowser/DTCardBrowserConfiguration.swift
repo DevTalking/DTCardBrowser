@@ -25,5 +25,7 @@ public struct CoverAttributes {
     public var coverHeight: CGFloat?
     public var logoImage: UIImage?
     public var description: String?
+    public var descriptionFontSize: CGFloat?
+    public var descriptionFontColor: UIColor?
     
 }

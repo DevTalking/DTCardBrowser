@@ -19,6 +19,10 @@ class DTCardView: UIView {
             
             if let cv = coverView {
                 addSubview(cv)
+                
+                coverView!.translatesAutoresizingMaskIntoConstraints = false
+                let hc = NSLayoutConstraint(item: coverView!, attribute: .CenterX, relatedBy: .Equal, toItem: self, attribute: .CenterX, multiplier: 1, constant: 0)
+                addConstraint(hc)
             }
         }
     }

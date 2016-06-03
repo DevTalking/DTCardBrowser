@@ -37,8 +37,11 @@ class DTCoverView: UIView {
                 addSubview(descriptionLabel)
                 
                 descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
+                descriptionLabel.numberOfLines = 0
                 let hc = NSLayoutConstraint(item: descriptionLabel, attribute: .CenterX, relatedBy: .Equal, toItem: logoImageView, attribute: .CenterX, multiplier: 1, constant: 0)
-                addConstraint(hc)
+                let wc = NSLayoutConstraint(item: descriptionLabel, attribute: .Width, relatedBy: .LessThanOrEqual, toItem: self, attribute: .Width, multiplier: 0.8, constant: 0)
+                let tc = NSLayoutConstraint(item: descriptionLabel, attribute: .Top, relatedBy: .Equal, toItem: logoImageView, attribute: .Bottom, multiplier: 1, constant: 5)
+                addConstraints([hc, wc, tc])
             } else {
                 // Fallback on earlier versions
             }
@@ -52,6 +55,11 @@ class DTCoverView: UIView {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
+        
+        translatesAutoresizingMaskIntoConstraints = false
+        let wc = NSLayoutConstraint(item: self, attribute: .Width, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1, constant: frame.size.width)
+        let hc = NSLayoutConstraint(item: self, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1, constant: frame.size.height)
+        addConstraints([wc, hc])
     }
     
     required init?(coder aDecoder: NSCoder) {

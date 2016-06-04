@@ -11,7 +11,7 @@ import UIKit
 public class DTCardBrowserViewController: UIViewController {
     
     /// 背景图视图
-    lazy var backgroundImageView: UIImageView! = {
+    var backgroundImageView: UIImageView! = {
         let imageView = UIImageView(frame: CGRect.zero)
         imageView.contentMode = .ScaleAspectFill
         return imageView
@@ -19,6 +19,7 @@ public class DTCardBrowserViewController: UIViewController {
     
     /// 显示卡片的视图
     var cardView = DTCardView(frame: CGRect.zero)
+    var viewControllers: [UIViewController]?
 
     override public func viewDidLoad() {
         super.viewDidLoad()
@@ -34,6 +35,9 @@ public class DTCardBrowserViewController: UIViewController {
         backgroundImageView.frame = view.bounds
         backgroundImageView.image = cfg.backgroundImage
         view.addSubview(backgroundImageView)
+        
+        cardView.frame = view.bounds
+        view.addSubview(cardView)
         
         if let w = cfg.coverAttributes.coverWidth, h = cfg.coverAttributes.coverHeight {
             cardView.coverView = DTCoverView(frame: CGRectMake(0, 0, w, h))
@@ -51,9 +55,9 @@ public class DTCardBrowserViewController: UIViewController {
         cardView.coverView!.descriptionFontColor = cfg.coverAttributes.descriptionFontColor == nil ? UIColor.whiteColor() : cfg.coverAttributes.descriptionFontColor!
         cardView.coverView!.descriptions = cfg.coverAttributes.description
         
-        
-        cardView.frame = view.bounds
-        view.addSubview(cardView)
+        if let vcs = cfg.viewControllers {
+            viewControllers = vcs
+        }
     }
 
 }

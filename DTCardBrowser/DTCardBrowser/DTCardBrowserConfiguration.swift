@@ -12,6 +12,7 @@ public struct DTCardBrowserConfiguration {
 
     public var backgroundImage: UIImage?
     public var coverAttributes: CoverAttributes
+    public var viewControllers: [UIViewController]?
     
     public init() {
         coverAttributes = CoverAttributes()

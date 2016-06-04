@@ -10,6 +10,7 @@
 		7B592CCD1CFD8609007B0C35 /* DTCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B592CCC1CFD8609007B0C35 /* DTCardView.swift */; };
 		7B592CCF1CFD8F6A007B0C35 /* DTCardBrowserConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B592CCE1CFD8F6A007B0C35 /* DTCardBrowserConfiguration.swift */; };
 		7B592CD11CFE75AB007B0C35 /* DTCoverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B592CD01CFE75AB007B0C35 /* DTCoverView.swift */; };
+		7BB481801D032402008078F5 /* DTCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BB4817F1D032402008078F5 /* DTCard.swift */; };
 		7BCBE3E11CFC39C4007E3314 /* DTCardBrowser.h in Headers */ = {isa = PBXBuildFile; fileRef = 7BCBE3E01CFC39C4007E3314 /* DTCardBrowser.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7BCBE3F81CFC837D007E3314 /* DTCardBrowserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BCBE3F71CFC837D007E3314 /* DTCardBrowserViewController.swift */; };
 /* End PBXBuildFile section */
@@ -18,6 +19,7 @@
 		7B592CCC1CFD8609007B0C35 /* DTCardView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DTCardView.swift; sourceTree = "<group>"; };
 		7B592CCE1CFD8F6A007B0C35 /* DTCardBrowserConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DTCardBrowserConfiguration.swift; sourceTree = "<group>"; };
 		7B592CD01CFE75AB007B0C35 /* DTCoverView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DTCoverView.swift; sourceTree = "<group>"; };
+		7BB4817F1D032402008078F5 /* DTCard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DTCard.swift; sourceTree = "<group>"; };
 		7BCBE3DD1CFC39C4007E3314 /* DTCardBrowser.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = DTCardBrowser.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7BCBE3E01CFC39C4007E3314 /* DTCardBrowser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DTCardBrowser.h; sourceTree = "<group>"; };
 		7BCBE3E21CFC39C4007E3314 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -58,6 +60,7 @@
 				7BCBE3F71CFC837D007E3314 /* DTCardBrowserViewController.swift */,
 				7B592CCC1CFD8609007B0C35 /* DTCardView.swift */,
 				7B592CD01CFE75AB007B0C35 /* DTCoverView.swift */,
+				7BB4817F1D032402008078F5 /* DTCard.swift */,
 				7B592CCE1CFD8F6A007B0C35 /* DTCardBrowserConfiguration.swift */,
 				7BCBE3E21CFC39C4007E3314 /* Info.plist */,
 			);
@@ -143,6 +146,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7BB481801D032402008078F5 /* DTCard.swift in Sources */,
 				7B592CD11CFE75AB007B0C35 /* DTCoverView.swift in Sources */,
 				7B592CCD1CFD8609007B0C35 /* DTCardView.swift in Sources */,
 				7BCBE3F81CFC837D007E3314 /* DTCardBrowserViewController.swift in Sources */,

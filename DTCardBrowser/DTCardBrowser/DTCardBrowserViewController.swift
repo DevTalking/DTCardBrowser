@@ -56,7 +56,12 @@ public class DTCardBrowserViewController: UIViewController {
         cardView.coverView!.descriptions = cfg.coverAttributes.description
         
         if let vcs = cfg.viewControllers {
-            viewControllers = vcs
+            cardView.cards = vcs.map {
+                addChildViewController($0)
+                let dtCard = DTCard(frame: CGRect.zero)
+                dtCard.viewController = $0
+                return dtCard
+            }
         }
     }
 

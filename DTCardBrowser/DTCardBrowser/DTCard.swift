@@ -8,8 +8,20 @@
 
 import UIKit
 
-class DTCard: NSObject {
+class DTCard: UIView {
 
-    var view = UIView(frame: CGRect.zero)
+    var cardCenter = CGPoint.zero
+    var cardSize = CGSize.zero
+    var cardAnchorPoint = CGPoint(x: 0.5, y: 0.5)
+    var cardTransform = CGAffineTransformIdentity
+    var viewController: UIViewController?
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
 }

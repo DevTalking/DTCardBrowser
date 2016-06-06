@@ -29,27 +29,23 @@ class DTCoverView: UIView {
     var descriptions: String? = nil {
         didSet {
             var attributes: [String: AnyObject] = [:]
-            if #available(iOS 8.2, *) {
-                attributes[NSFontAttributeName] = UIFont.systemFontOfSize(descriptionFontSize, weight: UIFontWeightHeavy)
-                attributes[NSForegroundColorAttributeName] = descriptionFontColor
-                descriptionLabel.attributedText = NSAttributedString(string: descriptions ?? "DTBrowser by DevTalking", attributes: attributes)
-                descriptionLabel.numberOfLines = 0
-                descriptionLabel.sizeToFit()
-                addSubview(descriptionLabel)
-                
-                descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
-                let verticalConstraint = NSLayoutConstraint(item: descriptionLabel, attribute: .CenterX, relatedBy: .Equal, toItem: logoImageView, attribute: .CenterX, multiplier: 1, constant: 0)
-                let widthConstraint = NSLayoutConstraint(item: descriptionLabel, attribute: .Width, relatedBy: .LessThanOrEqual, toItem: self, attribute: .Width, multiplier: 0.9, constant: 0)
-                let topConstraint = NSLayoutConstraint(item: descriptionLabel, attribute: .Top, relatedBy: .Equal, toItem: logoImageView, attribute: .Bottom, multiplier: 1, constant: 5)
-                addConstraints([verticalConstraint, widthConstraint, topConstraint])
-                layoutIfNeeded()
-                
-                let bottomConstraintConstant = (self.frame.size.height - (logoImageView.frame.size.height + descriptionLabel.frame.size.height + 5)) / 2
-                let bottomConstraint = NSLayoutConstraint(item: logoImageView, attribute: .Top, relatedBy: .Equal, toItem: self, attribute: .Top, multiplier: 1, constant: bottomConstraintConstant)
-                addConstraint(bottomConstraint)
-            } else {
-                // Fallback on earlier versions
-            }
+            attributes[NSFontAttributeName] = UIFont.systemFontOfSize(descriptionFontSize, weight: UIFontWeightHeavy)
+            attributes[NSForegroundColorAttributeName] = descriptionFontColor
+            descriptionLabel.attributedText = NSAttributedString(string: descriptions ?? "DTBrowser by DevTalking", attributes: attributes)
+            descriptionLabel.numberOfLines = 0
+            descriptionLabel.sizeToFit()
+            addSubview(descriptionLabel)
+            
+            descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
+            let verticalConstraint = NSLayoutConstraint(item: descriptionLabel, attribute: .CenterX, relatedBy: .Equal, toItem: logoImageView, attribute: .CenterX, multiplier: 1, constant: 0)
+            let widthConstraint = NSLayoutConstraint(item: descriptionLabel, attribute: .Width, relatedBy: .LessThanOrEqual, toItem: self, attribute: .Width, multiplier: 0.9, constant: 0)
+            let topConstraint = NSLayoutConstraint(item: descriptionLabel, attribute: .Top, relatedBy: .Equal, toItem: logoImageView, attribute: .Bottom, multiplier: 1, constant: 5)
+            addConstraints([verticalConstraint, widthConstraint, topConstraint])
+            layoutIfNeeded()
+            
+            let bottomConstraintConstant = (self.frame.size.height - (logoImageView.frame.size.height + descriptionLabel.frame.size.height + 5)) / 2
+            let bottomConstraint = NSLayoutConstraint(item: logoImageView, attribute: .Top, relatedBy: .Equal, toItem: self, attribute: .Top, multiplier: 1, constant: bottomConstraintConstant)
+            addConstraint(bottomConstraint)
         }
     }
 

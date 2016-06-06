@@ -27,7 +27,13 @@ class DTCardView: UIView {
             }
         }
     }
-
+    
+    var cards: [DTCard] = [] {
+        didSet {
+            updateAllCards()
+        }
+    }
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
     }
@@ -36,4 +42,21 @@ class DTCardView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
+    func updateAllCards() {
+        for index in 0 ..< cards.count {
+            let card = cards[index]
+            addSubview(card)
+            card.frame.size = bounds.size
+            card.center.y = bounds.midY
+            card.center.x = bounds.midX + CGFloat(index + 1) * bounds.width * 0.68
+            let scale = CGAffineTransformMakeScale(0.6, 0.6)
+            card.transform = scale
+            card.backgroundColor = UIColor.cyanColor()
+            card.addSubview(card.viewController!.view)
+//            card.viewController!.view.frame.origin = card.bounds.origin
+//            card.viewController!.view.frame.size = card.frame.size
+            card.viewController!.view.frame = card.bounds
+        }
+    }
+    
 }

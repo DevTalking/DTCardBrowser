@@ -13,9 +13,9 @@ class DTCard: UIView {
     var cardFrame: CGRect {
         var f = CGRect.zero
         f.size = cardSize
-        f.origin.x = cardAnchorPoint.x * cardCenter.x
-        f.origin.y = cardAnchorPoint.y * cardCenter.y
         f = CGRectApplyAffineTransform(f, cardTransform)
+        f.origin.x = cardCenter.x - f.size.width * cardAnchorPoint.x
+        f.origin.y = cardCenter.y - f.size.height * cardAnchorPoint.y
         return f
     }
 

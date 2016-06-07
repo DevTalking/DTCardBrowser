@@ -31,8 +31,11 @@ class DTCardView: UIView {
     var cards: [DTCard] = [] {
         didSet {
             updateAllCards()
+            updateVisibleCards()
         }
     }
+    
+    var visibleCards = Set<DTCard>()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -45,18 +48,41 @@ class DTCardView: UIView {
     func updateAllCards() {
         for index in 0 ..< cards.count {
             let card = cards[index]
-            addSubview(card)
-            card.frame.size = bounds.size
-            card.center.y = bounds.midY
-            card.center.x = bounds.midX + CGFloat(index + 1) * bounds.width * 0.68
-            let scale = CGAffineTransformMakeScale(0.6, 0.6)
-            card.transform = scale
-            card.backgroundColor = UIColor.cyanColor()
-            card.addSubview(card.viewController!.view)
-//            card.viewController!.view.frame.origin = card.bounds.origin
-//            card.viewController!.view.frame.size = card.frame.size
-            card.viewController!.view.frame = card.bounds
+            card.cardCenter.x = bounds.midX + CGFloat(index + 1) * bounds.width * 0.68
+            card.cardCenter.y = bounds.midY
+            card.cardTransform = CGAffineTransformMakeScale(0.6, 0.6)
+            card.cardSize = bounds.size
         }
+    }
+    
+    func updateVisibleCards() {
+        for card in cards {
+            let isVisible = visibleCards.contains(card)
+            let shouldVisible = card.cardFrame.intersects(bounds)
+            if isVisible && !shouldVisible {
+                hideCard(card)
+            } else if !isVisible && shouldVisible {
+                showCard(card)
+            }
+        }
+    }
+    
+    func showCard(card: DTCard) {
+        visibleCards.insert(card)
+        updateViewForCard(card)
+        addSubview(card)
+    }
+    
+    func hideCard(card: DTCard) {
+        visibleCards.remove(card)
+        card.removeFromSuperview()
+    }
+    
+    func updateViewForCard(card: DTCard) {
+        card.bounds = CGRect(origin: CGPoint.zero, size: card.cardSize)
+        card.center = card.cardCenter
+        card.transform = card.cardTransform
+        card.layer.anchorPoint = card.cardAnchorPoint
     }
     
 }

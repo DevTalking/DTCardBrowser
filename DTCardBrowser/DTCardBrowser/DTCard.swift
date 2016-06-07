@@ -9,6 +9,15 @@
 import UIKit
 
 class DTCard: UIView {
+    
+    var cardFrame: CGRect {
+        var f = CGRect.zero
+        f.size = cardSize
+        f.origin.x = cardAnchorPoint.x * cardCenter.x
+        f.origin.y = cardAnchorPoint.y * cardCenter.y
+        f = CGRectApplyAffineTransform(f, cardTransform)
+        return f
+    }
 
     var cardCenter = CGPoint.zero
     var cardSize = CGSize.zero

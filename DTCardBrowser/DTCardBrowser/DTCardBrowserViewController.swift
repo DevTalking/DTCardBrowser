@@ -58,6 +58,7 @@ public class DTCardBrowserViewController: UIViewController {
         if let vcs = cfg.viewControllers {
             cardView.cards = vcs.map {
                 addChildViewController($0)
+                $0.didMoveToParentViewController(self)
                 let dtCard = DTCard(frame: CGRect.zero)
                 dtCard.viewController = $0
                 return dtCard

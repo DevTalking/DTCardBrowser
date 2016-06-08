@@ -8,7 +8,7 @@
 
 import UIKit
 
-class DTCardView: UIView {
+class DTCardView: UIView, UIGestureRecognizerDelegate {
     
     var coverView: DTCoverView? = nil {
         didSet {
@@ -36,9 +36,13 @@ class DTCardView: UIView {
     }
     
     var visibleCards = Set<DTCard>()
+    var panGesture = UIPanGestureRecognizer()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        addGestureRecognizer(panGesture)
+        panGesture.addTarget(self, action: #selector(self.pan(_:)))
+        panGesture.delegate = self
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -71,6 +75,8 @@ class DTCardView: UIView {
         visibleCards.insert(card)
         updateViewForCard(card)
         addSubview(card)
+        card.addSubview(card.viewController!.view)
+        card.viewController!.view.frame = card.bounds
     }
     
     func hideCard(card: DTCard) {
@@ -83,6 +89,10 @@ class DTCardView: UIView {
         card.center = card.cardCenter
         card.transform = card.cardTransform
         card.layer.anchorPoint = card.cardAnchorPoint
+    }
+    
+    func pan(recognizer: UIPanGestureRecognizer){
+        
     }
     
 }

@@ -35,6 +35,12 @@ class DTCardView: UIView, UIGestureRecognizerDelegate {
         }
     }
     
+    var offset: CGFloat = 0 {
+        didSet {
+            bounds.origin.x = offset
+        }
+    }
+    
     var visibleCards = Set<DTCard>()
     var panGesture = UIPanGestureRecognizer()
     
@@ -54,7 +60,7 @@ class DTCardView: UIView, UIGestureRecognizerDelegate {
             let card = cards[index]
             card.cardCenter.x = bounds.midX + CGFloat(index + 1) * bounds.width * 0.68
             card.cardCenter.y = bounds.midY
-            card.cardTransform = CGAffineTransformMakeScale(0.6, 0.6)
+            card.cardTransform = CGAffineTransformMakeScale(0.55, 0.55)
             card.cardSize = bounds.size
         }
     }
@@ -92,7 +98,12 @@ class DTCardView: UIView, UIGestureRecognizerDelegate {
     }
     
     func pan(recognizer: UIPanGestureRecognizer){
-        
+        switch recognizer.state {
+        case .Changed:
+            offset = -recognizer.translationInView(self).x * 0.68
+        default:
+            break
+        }
     }
     
 }

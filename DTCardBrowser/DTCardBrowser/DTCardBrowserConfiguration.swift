@@ -30,3 +30,19 @@ public struct CoverAttributes {
     public var descriptionFontColor: UIColor?
     
 }
+
+extension CGPoint {
+    
+    func toDestination(destination: CGPoint, scalar: CGFloat) -> CGPoint {
+        guard self != destination else {
+            return destination
+        }
+        var newPoint = CGPoint.zero
+        newPoint.x = x + scalar * (destination.x - x)
+        newPoint.y = y + scalar * (destination.y - y)
+//        x += scalar * (destination.x - x)
+//        y += scalar * (destination.y - y)
+        return newPoint
+    }
+    
+}

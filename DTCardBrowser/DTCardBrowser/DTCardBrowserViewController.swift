@@ -39,11 +39,7 @@ public class DTCardBrowserViewController: UIViewController {
         cardView.frame = view.bounds
         view.addSubview(cardView)
         
-        if let w = cfg.coverAttributes.coverWidth, h = cfg.coverAttributes.coverHeight {
-            cardView.coverView = DTCoverView(frame: CGRectMake(0, 0, w, h))
-        } else {
-            cardView.coverView = DTCoverView(frame: CGRect.zero)
-        }
+        cardView.coverView = DTCoverView(frame: CGRect.zero)
         
         if let image = cfg.coverAttributes.logoImage {
             cardView.coverView!.logoImageView = UIImageView(image: image)

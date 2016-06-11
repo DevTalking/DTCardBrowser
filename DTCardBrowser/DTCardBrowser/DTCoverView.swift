@@ -15,14 +15,8 @@ class DTCoverView: UIStackView {
             guard logoImageView != oldValue else {
                 return
             }
-            logoImageView.removeFromSuperview()
-            
+            oldValue.removeFromSuperview()
             logoImageView.sizeToFit()
-//            addSubview(logoImageView)
-            
-//            logoImageView.translatesAutoresizingMaskIntoConstraints = false
-//            let hc = NSLayoutConstraint(item: logoImageView, attribute: .CenterX, relatedBy: .Equal, toItem: self, attribute: .CenterX, multiplier: 1, constant: 0)
-//            addConstraint(hc)
         }
     }
     
@@ -35,7 +29,6 @@ class DTCoverView: UIStackView {
             descriptionLabel.numberOfLines = 0
             descriptionLabel.textAlignment = .Center
             descriptionLabel.sizeToFit()
-            addSubview(descriptionLabel)
             
             addArrangedSubview(logoImageView)
             addArrangedSubview(descriptionLabel)
@@ -43,16 +36,6 @@ class DTCoverView: UIStackView {
             let descriptionLabelSize = (descriptionLabel.text! as NSString).boundingRectWithSize(CGSizeMake(stackViewWidth, CGFloat.max), options: .UsesLineFragmentOrigin, attributes: attributes, context: nil)
             frame.size = CGSize(width: stackViewWidth, height: logoImageView.frame.height + descriptionLabelSize.height)
             center = CGPoint(x: superview!.bounds.midX, y: superview!.bounds.midY)
-//            descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
-//            let verticalConstraint = NSLayoutConstraint(item: descriptionLabel, attribute: .CenterX, relatedBy: .Equal, toItem: logoImageView, attribute: .CenterX, multiplier: 1, constant: 0)
-//            let widthConstraint = NSLayoutConstraint(item: descriptionLabel, attribute: .Width, relatedBy: .LessThanOrEqual, toItem: self, attribute: .Width, multiplier: 0.9, constant: 0)
-//            let topConstraint = NSLayoutConstraint(item: descriptionLabel, attribute: .Top, relatedBy: .Equal, toItem: logoImageView, attribute: .Bottom, multiplier: 1, constant: 5)
-//            addConstraints([verticalConstraint, widthConstraint, topConstraint])
-//            layoutIfNeeded()
-//            
-//            let bottomConstraintConstant = (self.frame.size.height - (logoImageView.frame.size.height + descriptionLabel.frame.size.height + 5)) / 2
-//            let bottomConstraint = NSLayoutConstraint(item: logoImageView, attribute: .Top, relatedBy: .Equal, toItem: self, attribute: .Top, multiplier: 1, constant: bottomConstraintConstant)
-//            addConstraint(bottomConstraint)
         }
     }
 
@@ -63,14 +46,8 @@ class DTCoverView: UIStackView {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
         axis = .Vertical
         alignment = .Center
-//        spacing = 3.0
-//        translatesAutoresizingMaskIntoConstraints = false
-//        let widthConstraint = NSLayoutConstraint(item: self, attribute: .Width, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1, constant: frame.size.width)
-//        let heightConstraint = NSLayoutConstraint(item: self, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1, constant: frame.size.height)
-//        addConstraints([widthConstraint, heightConstraint])
     }
     
     required init?(coder aDecoder: NSCoder) {

@@ -19,11 +19,6 @@ class DTCardView: UIView, UIGestureRecognizerDelegate {
             
             if let cv = coverView {
                 addSubview(cv)
-//                cv.frame.origin.y = (self.frame.size.height - cv.frame.size.height) / 2
-//                let verticalConstraint = NSLayoutConstraint(item: coverView!, attribute: .CenterX, relatedBy: .Equal, toItem: self, attribute: .CenterX, multiplier: 1, constant: 0)
-//                let topConstraintConstant = (self.frame.size.height - coverView!.frame.size.height) / 2
-//                let topConstraint = NSLayoutConstraint(item: coverView!, attribute: .Top, relatedBy: .Equal, toItem: self, attribute: .Top, multiplier: 1, constant: topConstraintConstant)
-//                addConstraints([verticalConstraint, topConstraint])
             }
         }
     }
@@ -38,17 +33,19 @@ class DTCardView: UIView, UIGestureRecognizerDelegate {
     var offset: CGFloat = 0 {
         didSet {
             bounds.origin.x = offset
+            coverView!.center.x = bounds.midX
             let originCenter = CGPoint(x: bounds.midX, y: bounds.midY)
             let destinationCenter = CGPoint(x: bounds.midX, y: coverView!.frame.size.height / 2)
-//            if coverView!.center.y > destinationCenter.y {
-//                coverView!.center = originCenter.toDestination(destinationCenter, scalar: offset / bounds.size.width / 0.2)
-//            }
-            coverView!.center = originCenter.toDestination(destinationCenter, scalar: offset / bounds.size.width / 0.2)
-//            coverView!.center = destinationCenter
+            var scalar =  min(offset / bounds.size.width / 0.5, 0.9)
+            scalar = max(scalar, 0)
+            coverView!.center.y = (originCenter.toDestination(destinationCenter, scalar: scalar)).y
+            coverView!.transform = CGAffineTransformMakeScale(1 - scalar * 0.3, 1 - scalar * 0.3)
+            coverView!.descriptionLabel.alpha = 0.9 - scalar
             updateVisibleCards()
         }
     }
     
+    var offsetWhenPanBegan: CGFloat = 0
     var visibleCards = Set<DTCard>()
     var panGesture = UIPanGestureRecognizer()
     let offsetRetio: CGFloat = 0.68
@@ -108,8 +105,18 @@ class DTCardView: UIView, UIGestureRecognizerDelegate {
     
     func pan(recognizer: UIPanGestureRecognizer){
         switch recognizer.state {
+        case .Began:
+            offsetWhenPanBegan = offset
         case .Changed:
-            offset = -recognizer.translationInView(self).x * offsetRetio
+            offset = offsetWhenPanBegan - recognizer.translationInView(self).x * offsetRetio
+            break
+        case .Ended, .Cancelled:
+            UIView.animateWithDuration(0.7, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .AllowUserInteraction, animations: {
+                let originCenter = CGPoint(x: self.bounds.midX, y: self.bounds.midY)
+                let destinationCenter = CGPoint(x: self.bounds.midX, y: self.coverView!.frame.size.height / 2)
+                self.coverView!.center.y = (originCenter.toDestination(destinationCenter, scalar: 0.9)).y
+                self.coverView!.transform = CGAffineTransformMakeScale(1 - 0.9 * 0.3, 1 - 0.9 * 0.3)
+            }, completion: nil)
         default:
             break
         }

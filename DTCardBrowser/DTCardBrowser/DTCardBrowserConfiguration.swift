@@ -22,8 +22,6 @@ public struct DTCardBrowserConfiguration {
 
 public struct CoverAttributes {
     
-    public var coverWidth: CGFloat?
-    public var coverHeight: CGFloat?
     public var logoImage: UIImage?
     public var description: String?
     public var descriptionFontSize: CGFloat?
@@ -40,8 +38,6 @@ extension CGPoint {
         var newPoint = CGPoint.zero
         newPoint.x = x + scalar * (destination.x - x)
         newPoint.y = y + scalar * (destination.y - y)
-//        x += scalar * (destination.x - x)
-//        y += scalar * (destination.y - y)
         return newPoint
     }
     

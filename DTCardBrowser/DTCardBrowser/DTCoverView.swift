@@ -59,4 +59,11 @@ class DTCoverView: UIStackView {
         print("DTCoverView.layoutSubviews")
     }
     
+    func moveWithScalar(scalar: CGFloat, andTransform transform: CGAffineTransform) {
+        let originCenter = CGPoint(x: superview!.bounds.midX, y: superview!.bounds.midY)
+        let destinationCenter = CGPoint(x: superview!.bounds.midX, y: frame.size.height / 2)
+        moveViewWithTransform(originCenterOfView: originCenter, destinationCenterOfView: destinationCenter, moveScalar: scalar, transform: transform)
+        descriptionLabel.alpha = 0.9 - scalar
+    }
+    
 }

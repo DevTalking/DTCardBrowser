@@ -54,11 +54,6 @@ class DTCoverView: UIStackView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        print("DTCoverView.layoutSubviews")
-    }
-    
     func moveWithScalar(scalar: CGFloat, andTransform transform: CGAffineTransform) {
         let originCenter = CGPoint(x: superview!.bounds.midX, y: superview!.bounds.midY)
         let destinationCenter = CGPoint(x: superview!.bounds.midX, y: frame.size.height / 2)

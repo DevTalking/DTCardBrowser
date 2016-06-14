@@ -19,14 +19,25 @@ class DTCard: UIView {
         return f
     }
 
+    var transformScalar: CGFloat = 0 {
+        didSet {
+//            transformScalar = min(transformScalar, maxCardTransformScalar)
+//            transformScalar = max(transformScalar, minCardTransformScalar)
+            self.transform = CGAffineTransformMakeScale(transformScalar, transformScalar)
+        }
+    }
+    
     var cardCenter = CGPoint.zero
     var cardSize = CGSize.zero
     var cardAnchorPoint = CGPoint(x: 0.5, y: 0.5)
     var cardTransform = CGAffineTransformIdentity
+    let minCardTransformScalar: CGFloat = 0.5
+    let maxCardTransformScalar: CGFloat = 0.65
     var viewController: UIViewController?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        transformScalar = minCardTransformScalar
     }
     
     required init?(coder aDecoder: NSCoder) {

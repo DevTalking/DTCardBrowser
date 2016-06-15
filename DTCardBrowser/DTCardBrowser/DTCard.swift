@@ -21,8 +21,6 @@ class DTCard: UIView {
 
     var transformScalar: CGFloat = 0 {
         didSet {
-//            transformScalar = min(transformScalar, maxCardTransformScalar)
-//            transformScalar = max(transformScalar, minCardTransformScalar)
             self.transform = CGAffineTransformMakeScale(transformScalar, transformScalar)
         }
     }

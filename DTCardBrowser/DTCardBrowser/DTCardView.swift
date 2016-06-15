@@ -42,35 +42,6 @@ class DTCardView: UIView, UIGestureRecognizerDelegate {
         }
     }
     
-    var centermostCardTransformScalar: CGFloat = 0 {
-        didSet {
-            centermostCardTransformScalar = min(centermostCardTransformScalar, maxCardTransformScalar)
-            centermostCardTransformScalar = max(centermostCardTransformScalar, minCardTransformScalar)
-
-//            if let centermostCard = calculateCentermostCard() {
-//                centermostCard.transform = CGAffineTransformMakeScale(centermostCardTransformScalar, centermostCardTransformScalar)
-//            } else {
-//                for centermostCard in visibleCards {
-//                    centermostCard.transform = CGAffineTransformMakeScale(centermostCardTransformScalar, centermostCardTransformScalar)
-//                }
-//            }
-        }
-    }
-    
-    var previousOfCentermostCardTransformScalar: CGFloat = 0 {
-        didSet {
-            previousOfCentermostCardTransformScalar = min(previousOfCentermostCardTransformScalar, maxCardTransformScalar)
-            previousOfCentermostCardTransformScalar = max(previousOfCentermostCardTransformScalar, minCardTransformScalar)
-//            print(previousOfCentermostCardTransformScalar)
-//            if let centermostCard = calculateCentermostCard() {
-//                if let previousOfCentermostCard = calculatePreviousOfCentermostCard(centermostCard) {
-//                    print(previousOfCentermostCard)
-//                    previousOfCentermostCard.transform = CGAffineTransformMakeScale(previousOfCentermostCardTransformScalar, previousOfCentermostCardTransformScalar)
-//                }
-//            }
-        }
-    }
-    
     var offsetWhenPanBegan: CGFloat = 0
     var visibleCards = Set<DTCard>()
     var panGesture = UIPanGestureRecognizer()
@@ -84,7 +55,6 @@ class DTCardView: UIView, UIGestureRecognizerDelegate {
         addGestureRecognizer(panGesture)
         panGesture.addTarget(self, action: #selector(self.pan(_:)))
         panGesture.delegate = self
-//        centermostCardTransformScalar = minCardTransformScalar
         calculateMaxTransformCard()
     }
     
@@ -218,41 +188,10 @@ class DTCardView: UIView, UIGestureRecognizerDelegate {
             offsetWhenPanBegan = offset
         case .Changed:
             offset = round(offsetWhenPanBegan - recognizer.translationInView(self).x * offsetRetio)
-//            leftPaned() {
-//                if let centermostCard = self.calculateCentermostCard() {
-//                    centermostCard.transformScalar += 0.0015
-//                } else {
-//                    for centermostCard in self.visibleCards {
-//                        centermostCard.transformScalar += 0.0015
-//                    }
-//                }
-//                
-//                if let previousOfCentermostCard = self.calculatePreviousOfCentermostCard() {
-//                    previousOfCentermostCard.transformScalar -= 0.0015
-//                }
-////                self.centermostCardTransformScalar += 0.0015
-////                self.previousOfCentermostCardTransformScalar -= 0.0015
-//            }
-//            rightPaned() {
-//                if let centermostCard = self.calculateCentermostCard() {
-//                    centermostCard.transformScalar -= 0.0015
-//                } else {
-//                    for centermostCard in self.visibleCards {
-//                        centermostCard.transformScalar -= 0.0015
-//                    }
-//                }
-//                
-//                if let previousOfCentermostCard = self.calculatePreviousOfCentermostCard() {
-//                    previousOfCentermostCard.transformScalar += 0.0015
-//                }
-////                self.centermostCardTransformScalar -= 0.0015
-////                self.previousOfCentermostCardTransformScalar += 0.0015
-//            }
+            
             for card in visibleCards {
                 var distance = abs(card.center.x - bounds.midX)
                 distance = min(distance, bounds.width * 1.4) / bounds.width * 1.4
-//                print(0.65 - (0.15 * distance))
-//                card.transform = CGAffineTransformMakeScale(0.65 - (0.15 * distance), 0.65 - (0.15 * distance))
                 card.transformScalar = 0.65 - (0.15 * distance)
             }
             break
@@ -306,71 +245,9 @@ class DTCardView: UIView, UIGestureRecognizerDelegate {
                         }
                     }
                     self.rightPaned() {
-//                        for card in self.visibleCards {
-//                            self.bounds.origin.x = 0
-//                            card.transformScalar = self.minCardTransformScalar
-//                        }
                         self.bounds.origin.x = 0
                     }
                 }
-                
-//                if let centermostCard = self.calculateCentermostCard() {
-//                    self.bounds.origin.x = centermostCard.frame.origin.x - (self.bounds.size.width - centermostCard.frame.width) / 2
-//                    centermostCard.transformScalar = self.maxCardTransformScalar
-////                    centermostCard.transform = CGAffineTransformMakeScale(self.maxCardTransformScalar, self.maxCardTransformScalar)
-////                    self.centermostCardTransformScalar = self.maxCardTransformScalar
-//                    
-////                    if let previousOfCentermostCard = self.calculatePreviousOfCentermostCard(centermostCard) {
-////                        previousOfCentermostCard.transform = CGAffineTransformMakeScale(self.minCardTransformScalar, self.minCardTransformScalar)
-////                        self.previousOfCentermostCardTransformScalar = self.minCardTransformScalar
-////                    }
-//                } else {
-//                    self.bounds.origin.x = 0
-//
-//                    for card in self.visibleCards {
-//                        card.transformScalar = self.minCardTransformScalar
-//                    }
-////                    self.centermostCardTransformScalar = self.minCardTransformScalar
-//                }
-//                
-//                if let previousOfCentermostCard = self.calculatePreviousOfCentermostCard() {
-//                    previousOfCentermostCard.transformScalar = self.minCardTransformScalar
-//                }
-//                for card in self.visibleCards {
-//                    var distance = abs(card.center.x - self.bounds.midX)
-//                    distance = min(distance, self.bounds.width * 0.68) / self.bounds.width * 0.68
-//                    card.transform = CGAffineTransformMakeScale(0.7 - (0.3 * distance), 0.7 - (0.3 * distance))
-//                }
-                
-//                if self.calculateCentermostCard() == nil {
-//                    self.bounds.origin.x = 0
-//                    for card in self.visibleCards {
-//                        card.transform = CGAffineTransformMakeScale(0.5, 0.5)
-//                    }
-//                } else {
-//                    for card in self.visibleCards {
-//                                            var distance = abs(card.center.x - self.bounds.midX)
-//                                            distance = min(distance, self.bounds.width * 1.4) / self.bounds.width * 1.4
-//                        var distance: CGFloat = 0
-//                        self.leftPaned() {
-//                            distance = abs(card.frame.origin.x - self.bounds.midX)
-//                        }
-//                        self.rightPaned() {
-//                            distance = abs(card.frame.origin.x + card.frame.size.width - self.bounds.midX)
-//                        }
-//                        if distance < self.bounds.midX / 2 {
-//                            self.bounds.origin.x = card.frame.origin.x - (self.bounds.size.width - card.frame.width) / 2
-//                            card.transform = CGAffineTransformMakeScale(0.65, 0.65)
-//                        } else {
-//                            card.transform = CGAffineTransformMakeScale(0.5, 0.5)
-//                        }
-                        
-                        //                    card.transform = CGAffineTransformMakeScale(0.65 - (0.15 * distance), 0.65 - (0.15 * distance))
-//                    }
-
-//                }
-                
-
                 
                 self.coverView!.center.x = self.bounds.midX
             }, completion: nil)

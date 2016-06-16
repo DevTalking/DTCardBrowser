@@ -19,6 +19,7 @@ public class DTCardBrowserViewController: UIViewController {
     
     /// 显示卡片的视图
     var cardView = DTCardView(frame: CGRect.zero)
+    /// viewController数组，即卡片
     var viewControllers: [UIViewController]?
 
     override public func viewDidLoad() {
@@ -40,7 +41,6 @@ public class DTCardBrowserViewController: UIViewController {
         view.addSubview(cardView)
         
         cardView.coverView = DTCoverView(frame: CGRect.zero)
-        
         if let image = cfg.coverAttributes.logoImage {
             cardView.coverView!.logoImageView = UIImageView(image: image)
         } else {

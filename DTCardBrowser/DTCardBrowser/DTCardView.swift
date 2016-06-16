@@ -10,6 +10,7 @@ import UIKit
 
 class DTCardView: UIView, UIGestureRecognizerDelegate {
     
+    /// Logo和描述的视图，即封面视图
     var coverView: DTCoverView? = nil {
         didSet {
             guard coverView != oldValue else {
@@ -23,6 +24,7 @@ class DTCardView: UIView, UIGestureRecognizerDelegate {
         }
     }
     
+    /// 卡片数组
     var cards: [DTCard] = [] {
         didSet {
             updateAllCards()
@@ -30,24 +32,31 @@ class DTCardView: UIView, UIGestureRecognizerDelegate {
         }
     }
     
+    /// 偏移量
     var offset: CGFloat = 0 {
         didSet {
             bounds.origin.x = offset
-
-            var coverViewTransformScalar =  min(offset / bounds.size.width / 0.5, 0.9)
+            
+            var coverViewTransformScalar =  min(offset / bounds.size.width / 0.7, 0.9)
             coverViewTransformScalar = max(coverViewTransformScalar, 0)
             coverView!.moveWithScalar(coverViewTransformScalar, andTransform: CGAffineTransformMakeScale(1 - coverViewTransformScalar * 0.3, 1 - coverViewTransformScalar * 0.3))
             
             updateVisibleCards()
         }
     }
-    
+    /// 拖动时的偏移量
     var offsetWhenPanBegan: CGFloat = 0
+    /// 可视的卡片集合
     var visibleCards = Set<DTCard>()
+    /// 拖动手势
     var panGesture = UIPanGestureRecognizer()
+    /// 偏移率
     let offsetRetio: CGFloat = 0.68
+    /// 卡片的最小缩放比例
     let minCardTransformScalar: CGFloat = 0.5
+    /// 卡片的最大缩放比例
     let maxCardTransformScalar: CGFloat = 0.65
+    /// 处于视图中间的卡片
     var centerCard: DTCard?
     
     override init(frame: CGRect) {
@@ -55,13 +64,14 @@ class DTCardView: UIView, UIGestureRecognizerDelegate {
         addGestureRecognizer(panGesture)
         panGesture.addTarget(self, action: #selector(self.pan(_:)))
         panGesture.delegate = self
-        calculateMaxTransformCard()
+        calculateCenterCard()
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
+    /// 更新cards数组中所有卡片的属性：center、size、transform。该方法更新的不是卡片真正视图的这些属性，而是DTCard中的存储属性中，用于以后更新真正的视图
     func updateAllCards() {
         for index in 0 ..< cards.count {
             let card = cards[index]
@@ -104,35 +114,35 @@ class DTCardView: UIView, UIGestureRecognizerDelegate {
         card.layer.anchorPoint = card.cardAnchorPoint
     }
     
-    func calculateCentermostCard() -> DTCard? {
-        var closestDistance = CGFloat.max
-        var closestCard: DTCard?
-        for card in visibleCards {
-            var distance: CGFloat = 0
-            leftPaned() {
-                distance = abs(card.frame.origin.x - self.bounds.midX)
-            }
-            rightPaned() {
-                if self.visibleCards.count == 1 {
-                    closestCard = nil
-                    distance = closestDistance
-                } else {
-                    distance = abs(card.frame.origin.x + card.frame.size.width - self.bounds.midX)
-                }
-            }
-
-            if distance < closestDistance {
-                closestDistance = distance
-                closestCard = card
-            }
-        }
-        
-        if let card = closestCard {
-            bringSubviewToFront(card)
-        }
-        
-        return closestCard
-    }
+//    func calculateCentermostCard() -> DTCard? {
+//        var closestDistance = CGFloat.max
+//        var closestCard: DTCard?
+//        for card in visibleCards {
+//            var distance: CGFloat = 0
+//            leftPaned() {
+//                distance = abs(card.frame.origin.x - self.bounds.midX)
+//            }
+//            rightPaned() {
+//                if self.visibleCards.count == 1 {
+//                    closestCard = nil
+//                    distance = closestDistance
+//                } else {
+//                    distance = abs(card.frame.origin.x + card.frame.size.width - self.bounds.midX)
+//                }
+//            }
+//
+//            if distance < closestDistance {
+//                closestDistance = distance
+//                closestCard = card
+//            }
+//        }
+//        
+//        if let card = closestCard {
+//            bringSubviewToFront(card)
+//        }
+//        
+//        return closestCard
+//    }
     
     func calculatePreviousOfCenterCard() -> DTCard? {
         guard let centerCard = centerCard else {
@@ -158,7 +168,7 @@ class DTCardView: UIView, UIGestureRecognizerDelegate {
         return nil
     }
     
-    func calculateMaxTransformCard() {
+    func calculateCenterCard() {
         var maxTransformScalar = minCardTransformScalar
         var maxTransformCard: DTCard?
         for card in visibleCards {
@@ -201,7 +211,8 @@ class DTCardView: UIView, UIGestureRecognizerDelegate {
                     self.coverView!.moveWithScalar(0.9, andTransform: CGAffineTransformMakeScale(1 - 0.9 * 0.3, 1 - 0.9 * 0.3))
                 }
                 self.rightPaned() {
-                    if self.visibleCards.count == 1 {
+                    print(self.calculateNextOfCenterCard())
+                    if self.calculatePreviousOfCenterCard() == nil {
                         self.coverView!.moveWithScalar(0, andTransform: CGAffineTransformMakeScale(1, 1))
                     }
                 }
@@ -251,7 +262,7 @@ class DTCardView: UIView, UIGestureRecognizerDelegate {
                 
                 self.coverView!.center.x = self.bounds.midX
             }, completion: nil)
-            calculateMaxTransformCard()
+            calculateCenterCard()
             offset = self.bounds.origin.x
         default:
             break

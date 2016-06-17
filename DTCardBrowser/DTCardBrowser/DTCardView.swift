@@ -32,14 +32,17 @@ class DTCardView: UIView, UIGestureRecognizerDelegate {
         }
     }
     
-    /// 偏移量
+    /// DTCardView偏移量
     var offset: CGFloat = 0 {
         didSet {
+            // 当offset赋值完成后，将DTCardView移动至该位置。
             bounds.origin.x = offset
             
-            var coverViewTransformScalar =  min(offset / bounds.size.width / 0.7, 0.9)
-            coverViewTransformScalar = max(coverViewTransformScalar, 0)
-            coverView!.moveWithScalar(coverViewTransformScalar, andTransform: CGAffineTransformMakeScale(1 - coverViewTransformScalar * 0.3, 1 - coverViewTransformScalar * 0.3))
+            // 在offset的基础上计算coverView的移动比例，即在给定的一段距离中，移动到哪个位置，该比例在0至0.9之间。
+            var coverViewMoveScalar =  min(offset / bounds.size.width / 0.7, 0.9)
+            coverViewMoveScalar = max(coverViewMoveScalar, 0)
+            // 在coverView移动到某个比例位置的过程中，尺寸也按照一定比例进行缩放。
+            coverView!.moveWithScalar(coverViewMoveScalar, andTransform: CGAffineTransformMakeScale(1 - coverViewMoveScalar * 0.3, 1 - coverViewMoveScalar * 0.3))
             
             updateVisibleCards()
         }
@@ -75,35 +78,44 @@ class DTCardView: UIView, UIGestureRecognizerDelegate {
     func updateAllCards() {
         for index in 0 ..< cards.count {
             let card = cards[index]
-            // 通过center属性确定卡片的位置：center.y坐标与父视图一致；center.x坐标首先偏移父视图一半宽度，然后再偏离卡片宽度的offsetretio倍，以此为基础，之后卡片的偏移位置为第一个卡片的位置乘以当前卡片在数组中的下标数。
+            // 通过center属性确定卡片的位置：center.y坐标与父视图一致；center.x坐标，第一个卡片偏移父视图（DTCardView）一半宽度，然后再偏离卡片宽度的offsetretio倍，之后卡片的偏移位置在偏离父视图（DTCardView）一半宽度的基础上再加offsetRetio倍卡片宽度的数组下标倍数。
             card.cardCenter.x = bounds.midX + CGFloat(index + 1) * bounds.width * offsetRetio
             card.cardCenter.y = bounds.midY
+            // 卡片的缩放比例
             card.cardTransform = CGAffineTransformMakeScale(minCardTransformScalar, minCardTransformScalar)
             card.cardSize = bounds.size
         }
     }
     
+    /// 判断卡片的显示状态，并依据判断结果显示或移除卡片。
     func updateVisibleCards() {
         for card in cards {
+            // 判断卡片是否在visibleCards数组中，以此判断该卡片是否正在显示中。
             let isVisible = visibleCards.contains(card)
+            // 判断该卡片是否与父视图（DTCardView）有交集，以此判断该卡片是否应该被显示。这里要注意的是card.cardFrame并不是卡片视图的真正属性，而是之前计算出的，但可以代表之后卡片视图显示的位置。
             let shouldVisible = card.cardFrame.intersects(bounds)
             if isVisible && !shouldVisible {
-                hideCard(card)
+                removeCard(card)
             } else if !isVisible && shouldVisible {
                 showCard(card)
             }
         }
     }
     
+    /// 显示卡片，即将DTCard作为子视图添加至DTCardView中。
+    /// - parameter card: 卡片视图
     func showCard(card: DTCard) {
         visibleCards.insert(card)
         updateViewForCard(card)
         addSubview(card)
+        // 当卡片视图显示viewController的内容
         card.addSubview(card.viewController!.view)
         card.viewController!.view.frame = card.bounds
     }
     
-    func hideCard(card: DTCard) {
+    /// 移除卡片，即将DTCard从DTCardView中移除。
+    /// - parameter card: 卡片视图
+    func removeCard(card: DTCard) {
         visibleCards.remove(card)
         card.removeFromSuperview()
     }
@@ -114,36 +126,6 @@ class DTCardView: UIView, UIGestureRecognizerDelegate {
         card.transform = card.cardTransform
         card.layer.anchorPoint = card.cardAnchorPoint
     }
-    
-//    func calculateCentermostCard() -> DTCard? {
-//        var closestDistance = CGFloat.max
-//        var closestCard: DTCard?
-//        for card in visibleCards {
-//            var distance: CGFloat = 0
-//            leftPaned() {
-//                distance = abs(card.frame.origin.x - self.bounds.midX)
-//            }
-//            rightPaned() {
-//                if self.visibleCards.count == 1 {
-//                    closestCard = nil
-//                    distance = closestDistance
-//                } else {
-//                    distance = abs(card.frame.origin.x + card.frame.size.width - self.bounds.midX)
-//                }
-//            }
-//
-//            if distance < closestDistance {
-//                closestDistance = distance
-//                closestCard = card
-//            }
-//        }
-//        
-//        if let card = closestCard {
-//            bringSubviewToFront(card)
-//        }
-//        
-//        return closestCard
-//    }
     
     func calculatePreviousOfCenterCard() -> DTCard? {
         guard let centerCard = centerCard else {

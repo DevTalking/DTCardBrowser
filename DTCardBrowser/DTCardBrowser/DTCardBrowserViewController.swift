@@ -19,7 +19,7 @@ public class DTCardBrowserViewController: UIViewController {
     
     /// 显示卡片的视图
     var cardView = DTCardView(frame: CGRect.zero)
-    /// viewController数组，即卡片
+    /// viewController数组，即显示卡片内容的视图控制器
     var viewControllers: [UIViewController]?
 
     override public func viewDidLoad() {

@@ -71,10 +71,11 @@ class DTCardView: UIView, UIGestureRecognizerDelegate {
         fatalError("init(coder:) has not been implemented")
     }
 
-    /// 更新cards数组中所有卡片的属性：center、size、transform。该方法更新的不是卡片真正视图的这些属性，而是DTCard中的存储属性中，用于以后更新真正的视图
+    /// 更新cards数组中所有卡片的属性：center、size、transform。该方法更新的不是卡片真正视图的这些属性，而是DTCard中代表视图属性的存储属性。因为在计算这些属性时，卡片视图并没有加入到父视图中。所以在这里先将视图属性进行存储，用于以后更新真正的视图属性。
     func updateAllCards() {
         for index in 0 ..< cards.count {
             let card = cards[index]
+            // 通过center属性确定卡片的位置：center.y坐标与父视图一致；center.x坐标首先偏移父视图一半宽度，然后再偏离卡片宽度的offsetretio倍，以此为基础，之后卡片的偏移位置为第一个卡片的位置乘以当前卡片在数组中的下标数。
             card.cardCenter.x = bounds.midX + CGFloat(index + 1) * bounds.width * offsetRetio
             card.cardCenter.y = bounds.midY
             card.cardTransform = CGAffineTransformMakeScale(minCardTransformScalar, minCardTransformScalar)

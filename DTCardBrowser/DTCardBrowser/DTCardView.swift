@@ -27,6 +27,7 @@ class DTCardView: UIView, UIGestureRecognizerDelegate {
     /// 卡片数组
     var cards: [DTCard] = [] {
         didSet {
+            // 卡片数组赋值完成之后更新卡片
             updateAllCards()
             updateVisibleCards()
         }
@@ -38,16 +39,15 @@ class DTCardView: UIView, UIGestureRecognizerDelegate {
             // 当offset赋值完成后，将DTCardView移动至该位置。
             bounds.origin.x = offset
             
-            // 在offset的基础上计算coverView的移动比例，即在给定的一段距离中，移动到哪个位置，该比例在0至0.9之间。
+            // 在offset的基础上计算coverView的移动比例，即在给定的一段距离中，移动到哪个位置，该比例在0至0.9之间
             var coverViewMoveScalar =  min(offset / bounds.size.width / 0.7, 0.9)
             coverViewMoveScalar = max(coverViewMoveScalar, 0)
-            // 在coverView移动到某个比例位置的过程中，尺寸也按照一定比例进行缩放。
+            // 在coverView移动到某个比例位置的过程中，尺寸也按照一定比例进行缩放
             coverView!.moveWithScalar(coverViewMoveScalar, andTransform: CGAffineTransformMakeScale(1 - coverViewMoveScalar * 0.3, 1 - coverViewMoveScalar * 0.3))
-            
             updateVisibleCards()
         }
     }
-    /// 拖动时的偏移量
+    /// 新一次滑动时DTCardView的偏移量，也就是上一次滑动完成之后的偏移量
     var offsetWhenPanBegan: CGFloat = 0
     /// 可视的卡片集合
     var visibleCards = Set<DTCard>()
@@ -74,11 +74,11 @@ class DTCardView: UIView, UIGestureRecognizerDelegate {
         fatalError("init(coder:) has not been implemented")
     }
 
-    /// 更新cards数组中所有卡片的属性：center、size、transform。该方法更新的不是卡片真正视图的这些属性，而是DTCard中代表视图属性的存储属性。因为在计算这些属性时，卡片视图并没有加入到父视图中。所以在这里先将视图属性进行存储，用于以后更新真正的视图属性。
-    func updateAllCards() {
+    /// 更新cards数组中所有卡片的属性：center、size、transform。该方法更新的不是卡片真正视图的这些属性，而是DTCard中代表视图属性的存储属性。因为在计算这些属性时，卡片视图并没有加入到父视图中。所以在这里先将视图属性进行存储，用于以后更新真正的视图属性
+    private func updateAllCards() {
         for index in 0 ..< cards.count {
             let card = cards[index]
-            // 通过center属性确定卡片的位置：center.y坐标与父视图一致；center.x坐标，第一个卡片偏移父视图（DTCardView）一半宽度，然后再偏离卡片宽度的offsetretio倍，之后卡片的偏移位置在偏离父视图（DTCardView）一半宽度的基础上再加offsetRetio倍卡片宽度的数组下标倍数。
+            // 通过center属性确定卡片的位置：center.y坐标与父视图一致；center.x坐标，第一个卡片偏移父视图（DTCardView）一半宽度，然后再偏离卡片宽度的offsetretio倍，之后卡片的偏移位置在偏离父视图（DTCardView）一半宽度的基础上再加offsetRetio倍卡片宽度的数组下标倍数
             card.cardCenter.x = bounds.midX + CGFloat(index + 1) * bounds.width * offsetRetio
             card.cardCenter.y = bounds.midY
             // 卡片的缩放比例
@@ -87,12 +87,12 @@ class DTCardView: UIView, UIGestureRecognizerDelegate {
         }
     }
     
-    /// 判断卡片的显示状态，并依据判断结果显示或移除卡片。
-    func updateVisibleCards() {
+    /// 判断卡片的显示状态，并依据判断结果显示或移除卡片
+    private func updateVisibleCards() {
         for card in cards {
-            // 判断卡片是否在visibleCards数组中，以此判断该卡片是否正在显示中。
+            // 判断卡片是否在visibleCards数组中，以此判断该卡片是否正在显示中
             let isVisible = visibleCards.contains(card)
-            // 判断该卡片是否与父视图（DTCardView）有交集，以此判断该卡片是否应该被显示。这里要注意的是card.cardFrame并不是卡片视图的真正属性，而是之前计算出的，但可以代表之后卡片视图显示的位置。
+            // 判断该卡片是否与父视图（DTCardView）有交集，以此判断该卡片是否应该被显示。这里要注意的是card.cardFrame并不是卡片视图的真正属性，而是之前计算出的，但可以代表之后卡片视图显示的位置
             let shouldVisible = card.cardFrame.intersects(bounds)
             if isVisible && !shouldVisible {
                 removeCard(card)
@@ -104,7 +104,7 @@ class DTCardView: UIView, UIGestureRecognizerDelegate {
     
     /// 显示卡片，即将DTCard作为子视图添加至DTCardView中。
     /// - parameter card: 卡片视图
-    func showCard(card: DTCard) {
+    private func showCard(card: DTCard) {
         visibleCards.insert(card)
         updateViewForCard(card)
         addSubview(card)
@@ -113,21 +113,24 @@ class DTCardView: UIView, UIGestureRecognizerDelegate {
         card.viewController!.view.frame = card.bounds
     }
     
-    /// 移除卡片，即将DTCard从DTCardView中移除。
+    /// 移除卡片，即将DTCard从DTCardView中移除
     /// - parameter card: 卡片视图
-    func removeCard(card: DTCard) {
+    private func removeCard(card: DTCard) {
         visibleCards.remove(card)
         card.removeFromSuperview()
     }
     
-    func updateViewForCard(card: DTCard) {
+    /// 更新卡片视图真正的属性
+    /// - parameter card: 卡片视图
+    private func updateViewForCard(card: DTCard) {
         card.bounds = CGRect(origin: CGPoint.zero, size: card.cardSize)
         card.center = card.cardCenter
         card.transform = card.cardTransform
         card.layer.anchorPoint = card.cardAnchorPoint
     }
     
-    func calculatePreviousOfCenterCard() -> DTCard? {
+    /// 计算当前显示在中间卡片的前一个卡片
+    private func calculatePreviousOfCenterCard() -> DTCard? {
         guard let centerCard = centerCard else {
             return nil
         }
@@ -139,7 +142,8 @@ class DTCardView: UIView, UIGestureRecognizerDelegate {
         return nil
     }
     
-    func calculateNextOfCenterCard() -> DTCard? {
+    /// 计算当前显示在中间卡片的后一个卡片
+    private func calculateNextOfCenterCard() -> DTCard? {
         guard let centerCard = centerCard else {
             return nil
         }
@@ -151,7 +155,8 @@ class DTCardView: UIView, UIGestureRecognizerDelegate {
         return nil
     }
     
-    func calculateCenterCard() {
+    /// 计算当前显示在中间的卡片
+    private func calculateCenterCard() {
         var maxTransformScalar = minCardTransformScalar
         var maxTransformCard: DTCard?
         for card in visibleCards {
@@ -163,44 +168,45 @@ class DTCardView: UIView, UIGestureRecognizerDelegate {
         centerCard = maxTransformCard
     }
     
-    func leftPaned(codeBlock: () -> Void) {
+    /// 手势向左滑动时需要处理逻辑的方法
+    /// - parameter codeBlock: 向左滑动时需要执行的闭包
+    private func leftPaned(codeBlock: () -> Void) {
         if offset > offsetWhenPanBegan {
             codeBlock()
         }
     }
     
+    /// 手势向右滑动时需要处理逻辑的方法
+    /// - parameter codeBlock: 向右滑动时需要执行的闭包
     func rightPaned(codeBlock: () -> Void) {
         if offset < offsetWhenPanBegan {
             codeBlock()
         }
     }
     
+    /// 进行滑动手势时触发的方法
+    /// - parameter recognizer: 滑动手势
     func pan(recognizer: UIPanGestureRecognizer){
         switch recognizer.state {
         case .Began:
-            offsetWhenPanBegan = offset
+            // 记录上次滑动完成后父视图（DTCardView）的x坐标位置
+            offsetWhenPanBegan = self.bounds.origin.x
         case .Changed:
+            // 计算偏移量：滑动开始时DTCardView的起始位置减去offsetRetio倍的手指滑动到的新位置，四舍五入取到一个滑动的距离
             offset = round(offsetWhenPanBegan - recognizer.translationInView(self).x * offsetRetio)
             
+            // 对于在显示状态的每个卡片视图，计算出在移动时它们的中点x坐标与父视图（DTCardView）中点x坐标的距离，然后求出该距离占父视图（DTCardView）宽度的比例，以此比例计算中滑动过程中卡片视图的缩放比例，即卡片与父视图的距离越小，缩放比例越大，反之缩放比例越小
             for card in visibleCards {
                 var distance = abs(card.center.x - bounds.midX)
                 distance = min(distance, bounds.width * 1.4) / bounds.width * 1.4
-                card.transformScalar = 0.65 - (0.15 * distance)
+                card.transformScalar = maxCardTransformScalar - ((maxCardTransformScalar - minCardTransformScalar) * distance)
             }
             break
         case .Ended, .Cancelled:
+            // 当滑动结束，也就是手指离开屏幕后，通过UIView的弹簧动画完成卡片的归位，其中包括左右移动滑动一个卡片时封面视图的移动
             UIView.animateWithDuration(0.6, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .AllowUserInteraction, animations: {
-                self.leftPaned() {
-                    self.coverView!.moveWithScalar(0.9, andTransform: CGAffineTransformMakeScale(1 - 0.9 * 0.3, 1 - 0.9 * 0.3))
-                }
-                self.rightPaned() {
-                    print(self.calculateNextOfCenterCard())
-                    if self.calculatePreviousOfCenterCard() == nil {
-                        self.coverView!.moveWithScalar(0, andTransform: CGAffineTransformMakeScale(1, 1))
-                    }
-                }
-                
                 if let centerCard = self.centerCard {
+                    // 中间有显示卡片的情况下，左滑结束时，中间卡片缩小，它的前一个卡片缩小，后一个卡片放大，同时父视图（DTCardView）移动到后一个卡片的中心位置。如果没有后一个卡片，即当前在中间的卡片为最后一个卡片时，只将父视图移动到该卡片的中心位置，该卡片的缩放比例保持为最大比例
                     self.leftPaned() {
                         if let previousOfCenterCard = self.calculatePreviousOfCenterCard() {
                             previousOfCenterCard.transformScalar = self.minCardTransformScalar
@@ -214,9 +220,9 @@ class DTCardView: UIView, UIGestureRecognizerDelegate {
                             self.bounds.origin.x = centerCard.frame.origin.x - (self.bounds.size.width - centerCard.frame.width) / 2
                             centerCard.transformScalar = self.maxCardTransformScalar
                         }
-                        
-                        
                     }
+                    
+                    // 中间有显示卡片的情况下，右滑结束时，中间卡片缩小，它的前一个卡片放大，后一个卡片缩小，同时父视图（DTCardView）移动到前一个卡片的中心位置。如果没有前一个卡片，即当前显示在中间的卡片为第一个卡片时，只将父视图归位到初始位置，该卡片的缩放比例保持为最小比例，同时封面视图向下移动到父视图中心位置，高宽比例增大
                     self.rightPaned() {
                         if let previousOfCenterCard = self.calculatePreviousOfCenterCard() {
                             self.bounds.origin.x = previousOfCenterCard.frame.origin.x - (self.bounds.size.width - previousOfCenterCard.frame.width) / 2
@@ -229,24 +235,34 @@ class DTCardView: UIView, UIGestureRecognizerDelegate {
                         
                         if let nextOfCenterCard = self.calculateNextOfCenterCard() {
                             nextOfCenterCard.transformScalar = self.minCardTransformScalar
-                        }                        
+                        }
+                        
+                        if self.calculatePreviousOfCenterCard() == nil {
+                            self.coverView!.moveWithScalar(0, andTransform: CGAffineTransformMakeScale(1, 1))
+                        }
                     }
                 } else {
+                    // 中间没有卡片显示的情况下，左滑结束时，将唯一处于显示状态的卡片比例放大，同时将父视图（DTCardView）移动至该卡片的中心位置。同时封面视图向上移动，高宽比例缩小
                     self.leftPaned() {
                         for card in self.visibleCards {
                             self.bounds.origin.x = card.frame.origin.x - (self.bounds.size.width - card.frame.width) / 2
                             card.transformScalar = self.maxCardTransformScalar
                         }
+                        self.coverView!.moveWithScalar(0.9, andTransform: CGAffineTransformMakeScale(1 - 0.9 * 0.3, 1 - 0.9 * 0.3))
                     }
+                    // 中间没有卡片显示的情况下，右滑结束时，将父视图归位到初始位置
                     self.rightPaned() {
                         self.bounds.origin.x = 0
                     }
                 }
                 
+                // 封面视图的中心x坐标始终与父视图的中心x坐标保持一致
                 self.coverView!.center.x = self.bounds.midX
             }, completion: nil)
+            
+            // 一次滑动结束后计算出新的处于中间的卡片视图，然后更新出新的要显示的卡片视图
             calculateCenterCard()
-            offset = self.bounds.origin.x
+            updateVisibleCards()
         default:
             break
         }
@@ -256,6 +272,9 @@ class DTCardView: UIView, UIGestureRecognizerDelegate {
 
 extension CGPoint {
     
+    /// 根据给定的比例，计算出给定的一段距离中的位置
+    /// - parameter destination: 目的位置
+    /// - parameter scalar: 这段距离中的某个位置，比如这段距离的三分之一，五分之一等
     func toDestination(destination: CGPoint, scalar: CGFloat) -> CGPoint {
         guard self != destination else {
             return destination
@@ -264,15 +283,6 @@ extension CGPoint {
         newPoint.x = x + scalar * (destination.x - x)
         newPoint.y = y + scalar * (destination.y - y)
         return newPoint
-    }
-    
-}
-
-extension UIView {
-    
-    func moveViewWithTransform(originCenterOfView originCenterOfView: CGPoint, destinationCenterOfView: CGPoint, moveScalar: CGFloat, transform: CGAffineTransform) {
-        self.center = originCenterOfView.toDestination(destinationCenterOfView, scalar: moveScalar)
-        self.transform = transform
     }
     
 }

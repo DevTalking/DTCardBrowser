@@ -50,6 +50,7 @@ public class DTCardBrowserViewController: UIViewController {
         cardView.coverView!.descriptionFontSize = cfg.coverAttributes.descriptionFontSize == nil ? 12.0 : cfg.coverAttributes.descriptionFontSize!
         cardView.coverView!.descriptionFontColor = cfg.coverAttributes.descriptionFontColor == nil ? UIColor.whiteColor() : cfg.coverAttributes.descriptionFontColor!
         cardView.coverView!.descriptions = cfg.coverAttributes.description
+        cardView.coverView!.config()
         
         if let vcs = cfg.viewControllers {
             cardView.cards = vcs.map {

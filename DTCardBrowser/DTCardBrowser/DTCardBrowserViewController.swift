@@ -24,6 +24,7 @@ public class DTCardBrowserViewController: UIViewController {
 
     override public func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = UIColor.whiteColor()
     }
 
     override public func didReceiveMemoryWarning() {
@@ -33,9 +34,11 @@ public class DTCardBrowserViewController: UIViewController {
     /// 配置卡片浏览控制器的方法，比如背景图片，Logo图片，卡片控制器，各种按钮等
     /// - parameter cfg: 配置项结构体
     public func dtCardBrowserConfig(configuration cfg: DTCardBrowserConfiguration) {
-        backgroundImageView.frame = view.bounds
-        backgroundImageView.image = cfg.backgroundImage
-        view.addSubview(backgroundImageView)
+        if let image = cfg.backgroundImage {
+            backgroundImageView.frame = view.bounds
+            backgroundImageView.image = image
+            view.addSubview(backgroundImageView)
+        }
         
         cardView.frame = view.bounds
         view.addSubview(cardView)
@@ -52,13 +55,23 @@ public class DTCardBrowserViewController: UIViewController {
         cardView.coverView!.descriptions = cfg.coverAttributes.description
         cardView.coverView!.config()
         
-        if let vcs = cfg.viewControllers {
+//        if let vcs = cfg.viewControllers {
+//            cardView.cards = vcs.map {
+//                addChildViewController($0)
+//                $0.didMoveToParentViewController(self)
+//                
+//                let dtCard = DTCard(frame: CGRect.zero)
+//                dtCard.viewController = $0
+//                return dtCard
+//            }
+//        }
+        if let vcs = cfg.cardAttributes {
             cardView.cards = vcs.map {
-                addChildViewController($0)
-                $0.didMoveToParentViewController(self)
-                let dtCard = DTCard(frame: CGRect.zero)
-                dtCard.viewController = $0
-                return dtCard
+                addChildViewController($0.2)
+                $0.2.didMoveToParentViewController(self)
+                $0.0.cardViewController = $0.2
+                $0.0.cardBackgourndView = $0.1
+                return $0.0
             }
         }
     }

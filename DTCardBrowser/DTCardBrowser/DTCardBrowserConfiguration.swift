@@ -12,7 +12,8 @@ public struct DTCardBrowserConfiguration {
 
     public var backgroundImage: UIImage?
     public var coverAttributes: CoverAttributes
-    public var viewControllers: [UIViewController]?
+    public var cardAttributes: [(DTCard, DTCardBackground, UIViewController)]?
+//    public var viewControllers: [UIViewController]?
     
     public init() {
         coverAttributes = CoverAttributes()
@@ -28,3 +29,4 @@ public struct CoverAttributes {
     public var descriptionFontColor: UIColor?
     
 }
+

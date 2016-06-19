@@ -47,8 +47,10 @@ class DTCardView: UIView, UIGestureRecognizerDelegate {
             updateVisibleCards()
         }
     }
-    /// 新一次滑动时DTCardView的偏移量，也就是上一次滑动完成之后的偏移量
-    var offsetWhenPanBegan: CGFloat = 0
+    /// 新一次滑动时DTCardView的X坐标偏移量，也就是上一次滑动完成之后的偏移量
+    var offsetXWhenPanBegan: CGFloat = 0
+    /// 新一次滑动时DTCardView的Y坐标偏移量，也就是上一次滑动完成之后的偏移量
+    var offsetYWhenPanBegan: CGFloat = 0
     /// 可视的卡片集合
     var visibleCards = Set<DTCard>()
     /// 拖动手势
@@ -83,7 +85,8 @@ class DTCardView: UIView, UIGestureRecognizerDelegate {
             card.cardCenter.y = bounds.midY
             // 卡片的缩放比例
             card.cardTransform = CGAffineTransformMakeScale(minCardTransformScalar, minCardTransformScalar)
-            card.cardSize = bounds.size
+//            card.cardSize = bounds.size
+            card.cardSize = CGSize(width: bounds.size.width, height: bounds.size.height * 0.75)
         }
     }
     
@@ -108,9 +111,10 @@ class DTCardView: UIView, UIGestureRecognizerDelegate {
         visibleCards.insert(card)
         updateViewForCard(card)
         addSubview(card)
+        
         // 当卡片视图显示viewController的内容
-        card.addSubview(card.viewController!.view)
-        card.viewController!.view.frame = card.bounds
+//        card.addSubview(card.viewController!.view)
+//        card.cardViewController!.view.frame = card.bounds
     }
     
     /// 移除卡片，即将DTCard从DTCardView中移除
@@ -127,6 +131,12 @@ class DTCardView: UIView, UIGestureRecognizerDelegate {
         card.center = card.cardCenter
         card.transform = card.cardTransform
         card.layer.anchorPoint = card.cardAnchorPoint
+        card.backgroundColor = UIColor.whiteColor()
+        card.layer.cornerRadius = card.cardCornerRatius
+        card.layer.shadowOffset = CGSize(width: 0, height: 10)
+        card.layer.shadowColor = UIColor.blackColor().CGColor
+        card.layer.shadowRadius = 5
+        card.layer.shadowOpacity = 0.2
     }
     
     /// 计算当前显示在中间卡片的前一个卡片
@@ -171,29 +181,39 @@ class DTCardView: UIView, UIGestureRecognizerDelegate {
     /// 手势向左滑动时需要处理逻辑的方法
     /// - parameter codeBlock: 向左滑动时需要执行的闭包
     private func leftPaned(codeBlock: () -> Void) {
-        if offset > offsetWhenPanBegan {
+        if offset > offsetXWhenPanBegan {
             codeBlock()
         }
     }
     
     /// 手势向右滑动时需要处理逻辑的方法
     /// - parameter codeBlock: 向右滑动时需要执行的闭包
-    func rightPaned(codeBlock: () -> Void) {
-        if offset < offsetWhenPanBegan {
+    private func rightPaned(codeBlock: () -> Void) {
+        if offset < offsetXWhenPanBegan {
             codeBlock()
         }
     }
     
     /// 进行滑动手势时触发的方法
     /// - parameter recognizer: 滑动手势
-    func pan(recognizer: UIPanGestureRecognizer){
+    func pan(recognizer: UIPanGestureRecognizer) {
         switch recognizer.state {
         case .Began:
             // 记录上次滑动完成后父视图（DTCardView）的x坐标位置
-            offsetWhenPanBegan = self.bounds.origin.x
+            offsetXWhenPanBegan = self.bounds.origin.x
+            
+            // 记录上次滑动完成后处于中间卡片的的y坐标位置
+            if let centerCard = centerCard {
+                if centerCard.frame.contains(recognizer.translationInView(self)) {
+                    offsetYWhenPanBegan = centerCard.frame.origin.y
+                    centerCard.cardBackgourndView!.frame.size = centerCard.frame.size
+                    centerCard.cardBackgourndView!.center = CGPoint(x: bounds.midX, y: bounds.midY)
+                    addSubview(centerCard.cardBackgourndView!)
+                }
+            }
         case .Changed:
             // 计算偏移量：滑动开始时DTCardView的起始位置减去offsetRetio倍的手指滑动到的新位置，四舍五入取到一个滑动的距离
-            offset = round(offsetWhenPanBegan - recognizer.translationInView(self).x * offsetRetio)
+            offset = round(offsetXWhenPanBegan - recognizer.translationInView(self).x * offsetRetio)
             
             // 对于在显示状态的每个卡片视图，计算出在移动时它们的中点x坐标与父视图（DTCardView）中点x坐标的距离，然后求出该距离占父视图（DTCardView）宽度的比例，以此比例计算中滑动过程中卡片视图的缩放比例，即卡片与父视图的距离越小，缩放比例越大，反之缩放比例越小
             for card in visibleCards {

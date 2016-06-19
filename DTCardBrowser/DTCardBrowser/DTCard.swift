@@ -8,7 +8,7 @@
 
 import UIKit
 
-class DTCard: UIView {
+public class DTCard: UIView {
     
     var cardFrame: CGRect {
         var f = CGRect.zero
@@ -29,17 +29,37 @@ class DTCard: UIView {
     var cardSize = CGSize.zero
     var cardAnchorPoint = CGPoint(x: 0.5, y: 0.5)
     var cardTransform = CGAffineTransformIdentity
+    var cardCornerRatius: CGFloat = 5.0
+    var cardBackgourndView: DTCardBackground?
     let minCardTransformScalar: CGFloat = 0.5
     let maxCardTransformScalar: CGFloat = 0.65
-    var viewController: UIViewController?
+    var cardViewController: UIViewController?
+//    /// 拖动手势
+//    var panGesture = UIPanGestureRecognizer()
     
-    override init(frame: CGRect) {
+    public override init(frame: CGRect) {
         super.init(frame: frame)
         transformScalar = minCardTransformScalar
+        
+//        addGestureRecognizer(panGesture)
+//        panGesture.addTarget(self, action: #selector(self.pan(_:)))
     }
     
-    required init?(coder aDecoder: NSCoder) {
+    required public init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+//    func pan(recognizer: UIPanGestureRecognizer) {
+//        switch recognizer.state {
+//        case .Began:
+//            print("began")
+//        case .Changed:
+//            print("changed")
+//        case .Ended, .Cancelled:
+//            print("end")
+//        default:
+//            break
+//        }
+//    }
     
 }

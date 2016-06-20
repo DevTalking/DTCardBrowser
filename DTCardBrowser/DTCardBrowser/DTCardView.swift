@@ -63,6 +63,8 @@ class DTCardView: UIView, UIGestureRecognizerDelegate {
     let maxCardTransformScalar: CGFloat = 0.65
     /// 处于视图中间的卡片
     var centerCard: DTCard?
+    /// 计算滑动方向时的最小有效滑动量（x坐标或y坐标）
+    var minimumPanTranslation: CGFloat = 15
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -194,9 +196,64 @@ class DTCardView: UIView, UIGestureRecognizerDelegate {
         }
     }
     
+    /// 手势水平滑动
+    /// - parameter translation: 滑动距离
+    private func horizontalPaned(translation: CGPoint) -> Bool {
+        return determinePanMoveDirection(translation) == .PanMoveLeft || determinePanMoveDirection(translation) == .PanMoveRight
+    }
+    
+    /// 手势垂直滑动
+    /// - parameter translation: 滑动距离
+    private func verticalPaned(translation: CGPoint) -> Bool {
+        return determinePanMoveDirection(translation) == .PanMoveUp || determinePanMoveDirection(translation) == .PanMoveDown
+    }
+    
+    /// 计算滑动方向
+    /// - parameter translation: 滑动距离
+    private func determinePanMoveDirection(translation: CGPoint) -> PanMoveDirection {
+        // 滑动距离大于最小有效距离视为触发滑动
+        if fabs(translation.x) > minimumPanTranslation {
+            var panHorizontal = false
+            
+            if translation.y == 0 {
+                panHorizontal = true
+            } else {
+                // x坐标距离与y坐标距离之比大于4视为水平滑动
+                panHorizontal = fabs(translation.x / translation.y) > 4
+            }
+            
+            if panHorizontal {
+                if translation.x > 0 {
+                    return .PanMoveRight
+                } else {
+                    return .PanMoveLeft
+                }
+            }
+        } else if fabs(translation.y) > minimumPanTranslation {
+            var panVertical = false
+            
+            if translation.x == 0 {
+                panVertical = true
+            } else {
+                // y坐标距离与x坐标距离之比大于4视为水平滑动
+                panVertical = fabs(translation.y / translation.x) > 4
+            }
+            
+            if panVertical {
+                if translation.y > 0 {
+                    return .PanMoveDown
+                } else {
+                    return .PanMoveUp
+                }
+            }
+        }
+        return .PanNone
+    }
+    
     /// 进行滑动手势时触发的方法
     /// - parameter recognizer: 滑动手势
     func pan(recognizer: UIPanGestureRecognizer) {
+        //TODO...申明translation
         switch recognizer.state {
         case .Began:
             // 记录上次滑动完成后父视图（DTCardView）的x坐标位置
@@ -212,8 +269,10 @@ class DTCardView: UIView, UIGestureRecognizerDelegate {
                 }
             }
         case .Changed:
-            // 计算偏移量：滑动开始时DTCardView的起始位置减去offsetRetio倍的手指滑动到的新位置，四舍五入取到一个滑动的距离
-            offset = round(offsetXWhenPanBegan - recognizer.translationInView(self).x * offsetRetio)
+            if horizontalPaned(recognizer.translationInView(self)) {
+                // 计算偏移量：滑动开始时DTCardView的起始位置减去offsetRetio倍的手指滑动到的新位置，四舍五入取到一个滑动的距离
+                offset = round(offsetXWhenPanBegan - recognizer.translationInView(self).x * offsetRetio)
+            }
             
             // 对于在显示状态的每个卡片视图，计算出在移动时它们的中点x坐标与父视图（DTCardView）中点x坐标的距离，然后求出该距离占父视图（DTCardView）宽度的比例，以此比例计算中滑动过程中卡片视图的缩放比例，即卡片与父视图的距离越小，缩放比例越大，反之缩放比例越小
             for card in visibleCards {
@@ -305,4 +364,8 @@ extension CGPoint {
         return newPoint
     }
     
+}
+
+enum PanMoveDirection {
+    case PanMoveUp, PanMoveDown, PanMoveLeft, PanMoveRight, PanNone
 }

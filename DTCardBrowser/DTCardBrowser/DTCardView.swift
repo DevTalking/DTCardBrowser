@@ -64,7 +64,7 @@ class DTCardView: UIView, UIGestureRecognizerDelegate {
     /// 处于视图中间的卡片
     var centerCard: DTCard?
     /// 计算滑动方向时的最小有效滑动量（x坐标或y坐标）
-    var minimumPanTranslation: CGFloat = 15
+    var minimumPanTranslation: CGFloat = 10
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -112,6 +112,7 @@ class DTCardView: UIView, UIGestureRecognizerDelegate {
     private func showCard(card: DTCard) {
         visibleCards.insert(card)
         updateViewForCard(card)
+        addSubview(card.cardBackgourndView!)
         addSubview(card)
         
         // 当卡片视图显示viewController的内容
@@ -139,6 +140,9 @@ class DTCardView: UIView, UIGestureRecognizerDelegate {
         card.layer.shadowColor = UIColor.blackColor().CGColor
         card.layer.shadowRadius = 5
         card.layer.shadowOpacity = 0.2
+        card.cardBackgourndView!.frame.origin = CGPoint(x: card.frame.origin.x + 5, y: card.frame.origin.y + 5)
+        card.cardBackgourndView!.frame.size = CGSize(width: card.frame.width - 10, height: card.frame.height - 10)
+        card.cardBackgourndView!.layer.cornerRadius = 5
     }
     
     /// 计算当前显示在中间卡片的前一个卡片
@@ -208,6 +212,18 @@ class DTCardView: UIView, UIGestureRecognizerDelegate {
         return determinePanMoveDirection(translation) == .PanMoveUp || determinePanMoveDirection(translation) == .PanMoveDown
     }
     
+    /// 在中央卡片中上下滑动
+    /// - parameter translation: 手指滑动距离
+    /// - parameter location: 手指在卡片中的位置
+    /// - parameter handler: 处理闭包
+    private func isVerticalPanedInCenterCard(translation: CGPoint, location: CGPoint) -> Bool {
+        if let card = centerCard {
+            return verticalPaned(translation) && card.frame.contains(location)
+        } else {
+            return false
+        }
+    }
+    
     /// 计算滑动方向
     /// - parameter translation: 滑动距离
     private func determinePanMoveDirection(translation: CGPoint) -> PanMoveDirection {
@@ -253,95 +269,96 @@ class DTCardView: UIView, UIGestureRecognizerDelegate {
     /// 进行滑动手势时触发的方法
     /// - parameter recognizer: 滑动手势
     func pan(recognizer: UIPanGestureRecognizer) {
-        //TODO...申明translation
+        let translation = recognizer.translationInView(self)
+        let location = recognizer.locationInView(self)
         switch recognizer.state {
         case .Began:
             // 记录上次滑动完成后父视图（DTCardView）的x坐标位置
             offsetXWhenPanBegan = self.bounds.origin.x
-            
-            // 记录上次滑动完成后处于中间卡片的的y坐标位置
-            if let centerCard = centerCard {
-                if centerCard.frame.contains(recognizer.translationInView(self)) {
-                    offsetYWhenPanBegan = centerCard.frame.origin.y
-                    centerCard.cardBackgourndView!.frame.size = centerCard.frame.size
-                    centerCard.cardBackgourndView!.center = CGPoint(x: bounds.midX, y: bounds.midY)
-                    addSubview(centerCard.cardBackgourndView!)
-                }
-            }
         case .Changed:
-            if horizontalPaned(recognizer.translationInView(self)) {
+            if horizontalPaned(translation) {
                 // 计算偏移量：滑动开始时DTCardView的起始位置减去offsetRetio倍的手指滑动到的新位置，四舍五入取到一个滑动的距离
-                offset = round(offsetXWhenPanBegan - recognizer.translationInView(self).x * offsetRetio)
-            }
-            
-            // 对于在显示状态的每个卡片视图，计算出在移动时它们的中点x坐标与父视图（DTCardView）中点x坐标的距离，然后求出该距离占父视图（DTCardView）宽度的比例，以此比例计算中滑动过程中卡片视图的缩放比例，即卡片与父视图的距离越小，缩放比例越大，反之缩放比例越小
-            for card in visibleCards {
-                var distance = abs(card.center.x - bounds.midX)
-                distance = min(distance, bounds.width * 1.4) / bounds.width * 1.4
-                card.transformScalar = maxCardTransformScalar - ((maxCardTransformScalar - minCardTransformScalar) * distance)
+                offset = round(offsetXWhenPanBegan - translation.x * offsetRetio)
+                
+                // 对于在显示状态的每个卡片视图，计算出在移动时它们的中点x坐标与父视图（DTCardView）中点x坐标的距离，然后求出该距离占父视图（DTCardView）宽度的比例，以此比例计算中滑动过程中卡片视图的缩放比例，即卡片与父视图的距离越小，缩放比例越大，反之缩放比例越小
+                for card in visibleCards {
+                    var distance = abs(card.center.x - bounds.midX)
+                    distance = min(distance, bounds.width * 1.4) / bounds.width * 1.4
+                    card.transformScalar = maxCardTransformScalar - ((maxCardTransformScalar - minCardTransformScalar) * distance)
+                }
             }
             break
         case .Ended, .Cancelled:
-            // 当滑动结束，也就是手指离开屏幕后，通过UIView的弹簧动画完成卡片的归位，其中包括左右移动滑动一个卡片时封面视图的移动
-            UIView.animateWithDuration(0.6, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .AllowUserInteraction, animations: {
-                if let centerCard = self.centerCard {
-                    // 中间有显示卡片的情况下，左滑结束时，中间卡片缩小，它的前一个卡片缩小，后一个卡片放大，同时父视图（DTCardView）移动到后一个卡片的中心位置。如果没有后一个卡片，即当前在中间的卡片为最后一个卡片时，只将父视图移动到该卡片的中心位置，该卡片的缩放比例保持为最大比例
-                    self.leftPaned() {
-                        if let previousOfCenterCard = self.calculatePreviousOfCenterCard() {
-                            previousOfCenterCard.transformScalar = self.minCardTransformScalar
+            // 如果在卡片中上下滑动，则不会移动卡片
+            if isVerticalPanedInCenterCard(translation, location: location) {
+                UIView.animateWithDuration(0.3) {
+                    self.centerCard!.frame.origin.y -= 40
+                    self.centerCard!.cardBackgourndView!.frame.size.width = self.centerCard!.frame.width + 30
+                    self.centerCard!.cardBackgourndView!.frame.size.height = self.centerCard!.frame.height
+                    self.centerCard!.cardBackgourndView!.frame.origin.x = self.centerCard!.frame.origin.x - 15
+                }
+            } else {
+                // 当滑动结束，也就是手指离开屏幕后，通过UIView的弹簧动画完成卡片的归位，其中包括左右移动滑动一个卡片时封面视图的移动
+                UIView.animateWithDuration(0.6, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .AllowUserInteraction, animations: {
+                    if let centerCard = self.centerCard {
+                        // 中间有显示卡片的情况下，左滑结束时，中间卡片缩小，它的前一个卡片缩小，后一个卡片放大，同时父视图（DTCardView）移动到后一个卡片的中心位置。如果没有后一个卡片，即当前在中间的卡片为最后一个卡片时，只将父视图移动到该卡片的中心位置，该卡片的缩放比例保持为最大比例
+                        self.leftPaned() {
+                            if let previousOfCenterCard = self.calculatePreviousOfCenterCard() {
+                                previousOfCenterCard.transformScalar = self.minCardTransformScalar
+                            }
+                            
+                            if let nextOfCenterCard = self.calculateNextOfCenterCard() {
+                                self.bounds.origin.x = nextOfCenterCard.frame.origin.x - (self.bounds.size.width - nextOfCenterCard.frame.width) / 2
+                                nextOfCenterCard.transformScalar = self.maxCardTransformScalar
+                                centerCard.transformScalar = self.minCardTransformScalar
+                            } else {
+                                self.bounds.origin.x = centerCard.frame.origin.x - (self.bounds.size.width - centerCard.frame.width) / 2
+                                centerCard.transformScalar = self.maxCardTransformScalar
+                            }
                         }
                         
-                        if let nextOfCenterCard = self.calculateNextOfCenterCard() {
-                            self.bounds.origin.x = nextOfCenterCard.frame.origin.x - (self.bounds.size.width - nextOfCenterCard.frame.width) / 2
-                            nextOfCenterCard.transformScalar = self.maxCardTransformScalar
-                            centerCard.transformScalar = self.minCardTransformScalar
-                        } else {
-                            self.bounds.origin.x = centerCard.frame.origin.x - (self.bounds.size.width - centerCard.frame.width) / 2
-                            centerCard.transformScalar = self.maxCardTransformScalar
+                        // 中间有显示卡片的情况下，右滑结束时，中间卡片缩小，它的前一个卡片放大，后一个卡片缩小，同时父视图（DTCardView）移动到前一个卡片的中心位置。如果没有前一个卡片，即当前显示在中间的卡片为第一个卡片时，只将父视图归位到初始位置，该卡片的缩放比例保持为最小比例，同时封面视图向下移动到父视图中心位置，高宽比例增大
+                        self.rightPaned() {
+                            if let previousOfCenterCard = self.calculatePreviousOfCenterCard() {
+                                self.bounds.origin.x = previousOfCenterCard.frame.origin.x - (self.bounds.size.width - previousOfCenterCard.frame.width) / 2
+                                previousOfCenterCard.transformScalar = self.maxCardTransformScalar
+                                centerCard.transformScalar = self.minCardTransformScalar
+                            } else {
+                                self.bounds.origin.x = 0
+                                centerCard.transformScalar = self.minCardTransformScalar
+                            }
+                            
+                            if let nextOfCenterCard = self.calculateNextOfCenterCard() {
+                                nextOfCenterCard.transformScalar = self.minCardTransformScalar
+                            }
+                            
+                            if self.calculatePreviousOfCenterCard() == nil {
+                                self.coverView!.moveWithScalar(0, andTransform: CGAffineTransformMakeScale(1, 1))
+                            }
+                        }
+                    } else {
+                        // 中间没有卡片显示的情况下，左滑结束时，将唯一处于显示状态的卡片比例放大，同时将父视图（DTCardView）移动至该卡片的中心位置。同时封面视图向上移动，高宽比例缩小
+                        self.leftPaned() {
+                            for card in self.visibleCards {
+                                self.bounds.origin.x = card.frame.origin.x - (self.bounds.size.width - card.frame.width) / 2
+                                card.transformScalar = self.maxCardTransformScalar
+                            }
+                            self.coverView!.moveWithScalar(0.9, andTransform: CGAffineTransformMakeScale(1 - 0.9 * 0.3, 1 - 0.9 * 0.3))
+                        }
+                        // 中间没有卡片显示的情况下，右滑结束时，将父视图归位到初始位置
+                        self.rightPaned() {
+                            self.bounds.origin.x = 0
                         }
                     }
                     
-                    // 中间有显示卡片的情况下，右滑结束时，中间卡片缩小，它的前一个卡片放大，后一个卡片缩小，同时父视图（DTCardView）移动到前一个卡片的中心位置。如果没有前一个卡片，即当前显示在中间的卡片为第一个卡片时，只将父视图归位到初始位置，该卡片的缩放比例保持为最小比例，同时封面视图向下移动到父视图中心位置，高宽比例增大
-                    self.rightPaned() {
-                        if let previousOfCenterCard = self.calculatePreviousOfCenterCard() {
-                            self.bounds.origin.x = previousOfCenterCard.frame.origin.x - (self.bounds.size.width - previousOfCenterCard.frame.width) / 2
-                            previousOfCenterCard.transformScalar = self.maxCardTransformScalar
-                            centerCard.transformScalar = self.minCardTransformScalar
-                        } else {
-                            self.bounds.origin.x = 0
-                            centerCard.transformScalar = self.minCardTransformScalar
-                        }
-                        
-                        if let nextOfCenterCard = self.calculateNextOfCenterCard() {
-                            nextOfCenterCard.transformScalar = self.minCardTransformScalar
-                        }
-                        
-                        if self.calculatePreviousOfCenterCard() == nil {
-                            self.coverView!.moveWithScalar(0, andTransform: CGAffineTransformMakeScale(1, 1))
-                        }
-                    }
-                } else {
-                    // 中间没有卡片显示的情况下，左滑结束时，将唯一处于显示状态的卡片比例放大，同时将父视图（DTCardView）移动至该卡片的中心位置。同时封面视图向上移动，高宽比例缩小
-                    self.leftPaned() {
-                        for card in self.visibleCards {
-                            self.bounds.origin.x = card.frame.origin.x - (self.bounds.size.width - card.frame.width) / 2
-                            card.transformScalar = self.maxCardTransformScalar
-                        }
-                        self.coverView!.moveWithScalar(0.9, andTransform: CGAffineTransformMakeScale(1 - 0.9 * 0.3, 1 - 0.9 * 0.3))
-                    }
-                    // 中间没有卡片显示的情况下，右滑结束时，将父视图归位到初始位置
-                    self.rightPaned() {
-                        self.bounds.origin.x = 0
-                    }
-                }
+                    // 封面视图的中心x坐标始终与父视图的中心x坐标保持一致
+                    self.coverView!.center.x = self.bounds.midX
+                    }, completion: nil)
                 
-                // 封面视图的中心x坐标始终与父视图的中心x坐标保持一致
-                self.coverView!.center.x = self.bounds.midX
-            }, completion: nil)
-            
-            // 一次滑动结束后计算出新的处于中间的卡片视图，然后更新出新的要显示的卡片视图
-            calculateCenterCard()
-            updateVisibleCards()
+                // 一次滑动结束后计算出新的处于中间的卡片视图，然后更新出新的要显示的卡片视图
+                calculateCenterCard()
+                updateVisibleCards()
+            }
         default:
             break
         }
